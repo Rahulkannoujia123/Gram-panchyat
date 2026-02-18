@@ -18,11 +18,18 @@ export function VoiceRecognition({
 }: VoiceRecognitionProps) {
   const [language, setLanguage] = useState<'en-US' | 'hi-IN'>('hi-IN');
   const [isBrowserSupported, setIsBrowserSupported] = useState(true);
+  
   const recognitionRef = useRef<any>(null);
-  const shouldListenRef = useRef(false);
-  const languageRef = useRef<'en-US' | 'hi-IN'>('hi-IN');
+  const languageRef = useRef(language);
 
-  // Initialize Web Speech API once
+  // Language update ko ref mein sync rakhein taaki recognition events ko latest value mile
+  useEffect(() => {
+    languageRef.current = language;
+    if (recognitionRef.current) {
+      recognitionRef.current.lang = language;
+    }
+  }, [language]);
+
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
@@ -31,208 +38,113 @@ export function VoiceRecognition({
       return;
     }
 
-    recognitionRef.current = new SpeechRecognition();
-    const recognition = recognitionRef.current;
-
-    // Configuration - use continuous:false for better restart control
-    recognition.continuous = false;
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true; // Isse lambi baat-cheet record hogi
     recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
-
-    let interimTranscript = '';
-
-    recognition.onstart = () => {
-      console.log('[v0] Speech recognition started');
-    };
+    recognition.lang = languageRef.current;
 
     recognition.onresult = (event: any) => {
-      interimTranscript = '';
+      let finalTranscript = '';
+      let interimTranscript = '';
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        const trans = event.results[i][0].transcript;
-
+        const transcriptChunk = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
-          console.log('[v0] Final transcript:', trans);
-          onTranscript(trans, languageRef.current);
-          interimTranscript = '';
+          finalTranscript += transcriptChunk;
         } else {
-          interimTranscript += trans + ' ';
+          interimTranscript += transcriptChunk;
         }
       }
 
-      // Update UI with interim transcript
-      if (interimTranscript) {
-        onTranscript(interimTranscript.trim() + '...', languageRef.current);
+      // Agar final text hai toh vahi bheinzein, warna interim dikhayein
+      const textToDisplay = finalTranscript || interimTranscript;
+      if (textToDisplay) {
+        onTranscript(textToDisplay, languageRef.current);
       }
     };
 
     recognition.onerror = (event: any) => {
-      // Ignore "aborted" errors - they're intentional when we stop/restart recognition
-      if (event.error !== 'aborted') {
-        console.error('[v0] Speech recognition error:', event.error);
+      console.error('Speech Error:', event.error);
+      if (event.error === 'not-allowed') {
+        alert("Microphone access denied! Please enable it in browser settings.");
       }
+      setIsListening(false);
     };
 
     recognition.onend = () => {
-      console.log('[v0] Speech recognition ended, shouldListen:', shouldListenRef.current);
-      // Auto-restart if user wants to keep listening
-      if (shouldListenRef.current) {
-        setTimeout(() => {
-          try {
-            recognition.start();
-          } catch (e) {
-            console.error('[v0] Failed to restart recognition:', e);
-          }
-        }, 100);
-      } else {
-        setIsListening(false);
+      // Agar state abhi bhi listening hai, matlab network ya timeout se ruka hai, toh restart karein
+      if (isListening) {
+        recognition.start();
       }
     };
 
+    recognitionRef.current = recognition;
+
     return () => {
-      if (recognition) {
-        try {
-          recognition.abort();
-        } catch (e) {
-          console.error('[v0] Error aborting recognition:', e);
-        }
-      }
+      recognition.stop();
     };
-  }, [onTranscript, setIsListening]);
+  }, [onTranscript, setIsListening, isListening]); // isListening dependency restart logic ke liye zaroori hai
 
   const toggleListening = useCallback(() => {
     if (!recognitionRef.current) return;
 
-    try {
-      if (isListening) {
-        console.log('[v0] Stopping listening');
-        shouldListenRef.current = false;
-        recognitionRef.current.stop();
-        setIsListening(false);
-      } else {
-        console.log('[v0] Starting listening with language:', languageRef.current);
-        shouldListenRef.current = true;
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      try {
         recognitionRef.current.lang = languageRef.current;
         recognitionRef.current.start();
         setIsListening(true);
+      } catch (e) {
+        console.error("Start error:", e);
       }
-    } catch (error) {
-      console.error('[v0] Error toggling listening:', error);
-      setIsListening(false);
     }
   }, [isListening, setIsListening]);
 
-  const changeLanguage = useCallback((newLang: 'en-US' | 'hi-IN') => {
-    console.log('[v0] Changing language to:', newLang);
+  // Language switch function
+  const changeLanguage = (newLang: 'en-US' | 'hi-IN') => {
     setLanguage(newLang);
-    languageRef.current = newLang;
-    
-    // If listening, restart with new language
-    if (isListening && recognitionRef.current) {
-      try {
-        shouldListenRef.current = true;
-        recognitionRef.current.abort();
-        setTimeout(() => {
+    if (isListening) {
+      // Restart taaki nayi language apply ho sake
+      recognitionRef.current?.stop();
+      setTimeout(() => {
+        if (recognitionRef.current) {
           recognitionRef.current.lang = newLang;
           recognitionRef.current.start();
-        }, 100);
-      } catch (error) {
-        console.error('[v0] Error changing language:', error);
-      }
+        }
+      }, 300);
     }
-  }, [isListening]);
+  };
 
   if (!isBrowserSupported) {
-    return (
-      <div className="p-4 bg-destructive/20 text-destructive rounded-lg">
-        <p>🔴 Voice recognition not supported in your browser</p>
-        <p className="text-sm mt-2">Please use Chrome, Edge, or Safari for voice features</p>
-      </div>
-    );
+    return <div className="p-4 bg-red-100 text-red-600 rounded-lg">Browser support nahi hai.</div>;
   }
 
   return (
-    <div className="space-y-4">
-      {/* Language Selector */}
-      <div className="flex gap-2 justify-center mb-4">
-        <button
+    <div className="flex flex-col items-center gap-6 p-6">
+      <div className="flex gap-4">
+        <button 
           onClick={() => changeLanguage('hi-IN')}
-          className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-            language === 'hi-IN'
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-muted text-muted-foreground hover:bg-secondary'
-          }`}
-        >
-          🇮🇳 हिंदी
-        </button>
-        <button
+          className={`px-4 py-2 rounded ${language === 'hi-IN' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+        >🇮🇳 हिंदी</button>
+        <button 
           onClick={() => changeLanguage('en-US')}
-          className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-            language === 'en-US'
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-muted text-muted-foreground hover:bg-secondary'
-          }`}
-        >
-          🇺🇸 English
-        </button>
+          className={`px-4 py-2 rounded ${language === 'en-US' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+        >🇺🇸 English</button>
       </div>
 
-      {/* Microphone Button */}
-      <div className="flex justify-center">
-        <button
-          onClick={toggleListening}
-          className={`p-6 rounded-full transition-all transform ${
-            isListening
-              ? 'bg-destructive text-white scale-110 animate-pulse'
-              : 'bg-primary text-primary-foreground hover:scale-105'
-          }`}
-          title={isListening ? 'Stop Listening' : 'Start Listening'}
-        >
-          {isListening ? (
-            <Mic size={40} className="animate-bounce" />
-          ) : (
-            <MicOff size={40} />
-          )}
-        </button>
+      <button
+        onClick={toggleListening}
+        className={`p-8 rounded-full transition-all ${isListening ? 'bg-red-500 animate-pulse scale-110' : 'bg-blue-500'}`}
+      >
+        {isListening ? <Mic size={48} color="white" /> : <MicOff size={48} color="white" />}
+      </button>
+
+      <div className="w-full max-w-md p-4 bg-white shadow-lg rounded-xl border">
+        <p className="text-sm text-gray-400 mb-2">{isListening ? "सुन रहे हैं..." : "बोलने के लिए माइक दबाएं"}</p>
+        <p className="text-lg min-h-[3rem]">{transcript || "..."}</p>
       </div>
-
-      {/* Status and Transcript */}
-      <div className="space-y-2">
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            {isListening ? (
-              <span className="flex items-center justify-center gap-2">
-                <Volume2 className="animate-spin" size={16} />
-                {language === 'hi-IN' ? 'सुन रहे हैं...' : 'Listening...'}
-              </span>
-            ) : (
-              <span>{language === 'hi-IN' ? 'माइक दबाएं' : 'Press mic to start'}</span>
-            )}
-          </p>
-        </div>
-
-        {transcript && (
-          <div className="p-4 bg-card rounded-lg border-2 border-primary">
-            <p className="text-sm font-semibold text-muted-foreground mb-2">
-              {language === 'hi-IN' ? 'आपका कहना:' : 'You said:'}
-            </p>
-            <p className="text-lg font-bold text-foreground break-words">{transcript}</p>
-          </div>
-        )}
-      </div>
-
-      {/* Listening Indicator */}
-      {isListening && (
-        <div className="flex justify-center gap-1">
-          {[...Array(5)].map((_, i) => (
-            <div
-              key={i}
-              className="w-1 h-8 bg-primary rounded-full animate-pulse"
-              style={{ animationDelay: `${i * 0.1}s` }}
-            />
-          ))}
-        </div>
-      )}
     </div>
   );
 }
