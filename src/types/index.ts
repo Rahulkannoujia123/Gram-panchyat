@@ -15,6 +15,7 @@ export interface NewsItem {
   title: string;
   category: string;
   date: string;
+  timestamp: string;
   content: string;
   image?: string;
   likes: number;
