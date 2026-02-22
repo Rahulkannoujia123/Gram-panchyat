@@ -26,6 +26,8 @@ export const HomePage = React.memo(function HomePage({ onNavigate }: HomePagePro
     { icon: '⚠️', label: 'आपातकाल', page: 'emergency' as Page },
     { icon: '🗳️', label: 'मतदान', page: 'polls' as Page },
     { icon: '📢', label: 'नोटिस', page: 'notices' as Page },
+    { icon: '🔔', label: 'सूचनाएं', page: 'notifications' as Page },
+    { icon: '👤', label: 'प्रोफाइल', page: 'profile' as Page },
   ];
 
   return (
@@ -39,7 +41,7 @@ export const HomePage = React.memo(function HomePage({ onNavigate }: HomePagePro
           textAlign: 'center',
         }}
       >
-        <h2 style={{ margin: '0 0 8px 0', fontSize: '28px' }}>पंचायत</h2>
+        <h2 style={{ margin: '0 0 8px 0', fontSize: '28px' }}>ग्राम पंचायत</h2>
         <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>आपका गाँव, आपका मंच</p>
       </div>
 
@@ -83,7 +85,7 @@ export const HomePage = React.memo(function HomePage({ onNavigate }: HomePagePro
         <h3 style={{ marginTop: '16px', marginBottom: '12px', fontSize: '16px', fontWeight: '600' }}>
           जल्दी पहुंचें
         </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
           {categories.map((cat) => (
             <button
               key={cat.label}

@@ -5,6 +5,8 @@ interface HeaderProps {
   title: string;
   showBack?: boolean;
   onBack?: () => void;
+  onNotificationsClick?: () => void;
+  onProfileClick?: () => void;
   rightAction?: React.ReactNode;
   notificationCount?: number;
 }
@@ -13,6 +15,8 @@ export const Header = React.memo(function Header({
   title,
   showBack = false,
   onBack,
+  onNotificationsClick,
+  onProfileClick,
   rightAction,
   notificationCount = 0,
 }: HeaderProps) {
@@ -51,28 +55,29 @@ export const Header = React.memo(function Header({
         <h1 style={{ margin: 0, fontSize: '20px', fontWeight: '600' }}>{title}</h1>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        {notificationCount > 0 && (
-          <div
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div
+          style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <button
+            onClick={onNotificationsClick}
             style={{
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
+              background: 'none',
+              border: 'none',
+              color: colors.neutral.white,
+              fontSize: '20px',
+              cursor: 'pointer',
+              padding: '0',
             }}
+            aria-label="Notifications"
           >
-            <button
-              style={{
-                background: 'none',
-                border: 'none',
-                color: colors.neutral.white,
-                fontSize: '20px',
-                cursor: 'pointer',
-                padding: '0',
-              }}
-              aria-label="Notifications"
-            >
-              🔔
-            </button>
+            🔔
+          </button>
+          {notificationCount > 0 && (
             <div
               style={{
                 position: 'absolute',
@@ -81,19 +86,39 @@ export const Header = React.memo(function Header({
                 backgroundColor: colors.status.error,
                 color: colors.neutral.white,
                 borderRadius: '50%',
-                width: '20px',
-                height: '20px',
+                width: '18px',
+                height: '18px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '12px',
+                fontSize: '10px',
                 fontWeight: 'bold',
+                border: `2px solid ${colors.primary.main}`,
               }}
             >
               {notificationCount > 9 ? '9+' : notificationCount}
             </div>
-          </div>
-        )}
+          )}
+        </div>
+
+        <button
+          onClick={onProfileClick}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: colors.neutral.white,
+            fontSize: '20px',
+            cursor: 'pointer',
+            padding: '0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          aria-label="Profile"
+        >
+          👤
+        </button>
+
         {rightAction && rightAction}
       </div>
     </header>
