@@ -5,9 +5,13 @@ import { Complaint } from '../types';
 
 const complaintCategories = ['सड़क', 'बिजली', 'सफाई', 'पानी', 'अन्य'];
 
+const zones = ['Babiracha', 'Rampur', 'Hibranpur', 'Bharawar'];
+
 export const ComplaintsPage = React.memo(function ComplaintsPage() {
   const [filter, setFilter] = useState('all');
   const [newComplaint, setNewComplaint] = useState('');
+  const [userName, setUserName] = useState('');
+  const [selectedZone, setSelectedZone] = useState('Babiracha');
   const [selectedCategory, setSelectedCategory] = useState('सड़क');
   const [localComplaints, setLocalComplaints] = useState(complaintsData);
 
@@ -24,20 +28,24 @@ export const ComplaintsPage = React.memo(function ComplaintsPage() {
   }, [filter, localComplaints]);
 
   const handleSubmit = useCallback(() => {
-    if (newComplaint.trim()) {
+    if (newComplaint.trim() && userName.trim()) {
       const complaint: Complaint = {
         id: Math.max(...localComplaints.map((c) => c.id), 0) + 1,
         title: newComplaint,
         description: newComplaint,
         date: new Date().toLocaleDateString('hi-IN'),
+        time: new Date().toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' }),
+        userName: userName,
+        zone: selectedZone,
         status: 'pending' as const,
         category: selectedCategory,
         votes: 0,
       };
       setLocalComplaints((prev) => [complaint, ...prev]);
       setNewComplaint('');
+      setUserName('');
     }
-  }, [newComplaint, selectedCategory, localComplaints]);
+  }, [newComplaint, userName, selectedZone, selectedCategory, localComplaints]);
 
   const handleVote = useCallback(
     (id: number) => {
@@ -50,8 +58,59 @@ export const ComplaintsPage = React.memo(function ComplaintsPage() {
 
   return (
     <div style={{ paddingBottom: '80px' }} className="page-transition">
+      {/* Pradhan Dashboard */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', padding: '16px' }}>
+        <div style={{ backgroundColor: colors.neutral.white, padding: '16px', borderRadius: '12px', textAlign: 'center', border: `1px solid ${colors.border}` }}>
+          <div style={{ fontSize: '20px', fontWeight: 'bold', color: colors.primary.main }}>{localComplaints.length}</div>
+          <div style={{ fontSize: '12px', color: colors.text.secondary }}>कुल शिकायतें</div>
+        </div>
+        <div style={{ backgroundColor: colors.neutral.white, padding: '16px', borderRadius: '12px', textAlign: 'center', border: `1px solid ${colors.border}` }}>
+          <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#558B2F' }}>{localComplaints.filter(c => c.status === 'resolved').length}</div>
+          <div style={{ fontSize: '12px', color: colors.text.secondary }}>समाधान</div>
+        </div>
+        <div style={{ backgroundColor: colors.neutral.white, padding: '16px', borderRadius: '12px', textAlign: 'center', border: `1px solid ${colors.border}` }}>
+          <div style={{ fontSize: '20px', fontWeight: 'bold', color: colors.accent.dark }}>{localComplaints.filter(c => c.status === 'pending').length}</div>
+          <div style={{ fontSize: '12px', color: colors.text.secondary }}>लंबित</div>
+        </div>
+      </div>
+
       {/* Submission Form */}
-      <div style={{ padding: '16px', backgroundColor: colors.neutral.light, borderRadius: '8px', margin: '16px' }}>
+      <div style={{ padding: '16px', backgroundColor: colors.neutral.light, borderRadius: '8px', margin: '0 16px 16px 16px' }}>
+        <input
+          type="text"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          placeholder="आपका नाम"
+          style={{
+            width: '100%',
+            padding: '8px',
+            marginBottom: '12px',
+            border: `1px solid ${colors.border}`,
+            borderRadius: '6px',
+            boxSizing: 'border-box',
+          }}
+        />
+
+        <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '14px' }}>
+          क्षेत्र चुनें:
+        </label>
+        <select
+          value={selectedZone}
+          onChange={(e) => setSelectedZone(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '8px',
+            marginBottom: '12px',
+            border: `1px solid ${colors.border}`,
+            borderRadius: '6px',
+            boxSizing: 'border-box',
+          }}
+        >
+          {zones.map((z) => (
+            <option key={z} value={z}>{z}</option>
+          ))}
+        </select>
+
         <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '14px' }}>
           श्रेणी चुनें:
         </label>
@@ -170,7 +229,7 @@ export const ComplaintsPage = React.memo(function ComplaintsPage() {
                     {complaint.title}
                   </h3>
                   <div style={{ fontSize: '12px', color: colors.text.secondary }}>
-                    {complaint.category} • {complaint.date}
+                    {complaint.userName} • {complaint.zone} • {complaint.category} • {complaint.date} {complaint.time}
                   </div>
                 </div>
                 <div
