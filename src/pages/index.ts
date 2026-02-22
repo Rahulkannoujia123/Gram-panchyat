@@ -1,0 +1,10 @@
+export { HomePage } from './HomePage';
+export { NewsPage } from './NewsPage';
+export { ComplaintsPage } from './ComplaintsPage';
+export { SchemesPage } from './SchemesPage';
+export { MembersPage } from './MembersPage';
+export { EmergencyPage } from './EmergencyPage';
+export { PollsPage } from './PollsPage';
+export { NoticesPage } from './NoticesPage';
+export { NotificationsPage } from './NotificationsPage';
+export { ProfilePage } from './ProfilePage';
