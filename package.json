@@ -1,8 +1,13 @@
 {
-  "name": "react-vite-tailwind",
+  "name": "gram-panchayat",
+  "description": "A modern village governance app for gram panchayat administration",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Rahulkannoujia123/gram-panchayat.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

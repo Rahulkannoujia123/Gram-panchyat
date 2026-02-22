@@ -1,6 +1,6 @@
-# पंचायत - Village Governance App
+# Gram Panchayat - Digital Village Governance Platform
 
-A modern, responsive mobile-first village governance application built with React, TypeScript, and Vite. Designed to empower villages with digital tools for news distribution, complaint management, scheme information, and community engagement.
+A modern, responsive mobile-first village governance application built with React, TypeScript, and Vite. **Gram Panchayat** (ग्राम पंचायत) is designed to empower villages with digital tools for news distribution, complaint management, scheme information, and community engagement.
 
 ## Features
 
