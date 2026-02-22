@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { newsData } from '../data';
 import { colors } from '../utils/colors';
+import { NewsItem } from '../types';
 
 export const NewsPage = React.memo(function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState('सभी');
@@ -15,6 +16,116 @@ export const NewsPage = React.memo(function NewsPage() {
       return categoryMatch && searchMatch;
     });
   }, [selectedCategory, searchTerm]);
+
+  const groupedNews = useMemo(() => {
+    const sorted = [...filtered].sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+
+    const now = new Date();
+    // Consider news from last 48 hours as "New"
+    const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+
+    return {
+      newNews: sorted.filter((news) => new Date(news.timestamp) >= twoDaysAgo),
+      oldNews: sorted.filter((news) => new Date(news.timestamp) < twoDaysAgo),
+    };
+  }, [filtered]);
+
+  const renderNewsCard = (news: NewsItem) => (
+    <div
+      key={news.id}
+      style={{
+        marginBottom: '16px',
+        backgroundColor: colors.neutral.white,
+        border: `1px solid ${colors.border}`,
+        borderRadius: '12px',
+        overflow: 'hidden',
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 12px ${colors.shadow}`;
+        (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+        (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+      }}
+    >
+      <div style={{ padding: '16px' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'start',
+            marginBottom: '8px',
+          }}
+        >
+          <div style={{ flex: 1 }}>
+            <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600' }}>
+              {news.title}
+            </h3>
+            <div style={{ fontSize: '12px', color: colors.text.secondary }}>
+              {news.category} • {news.date}
+            </div>
+          </div>
+          <span
+            style={{
+              padding: '4px 12px',
+              backgroundColor: colors.primary.light,
+              color: colors.primary.dark,
+              borderRadius: '12px',
+              fontSize: '11px',
+              fontWeight: '600',
+              marginLeft: '8px',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {news.category}
+          </span>
+        </div>
+        <p style={{ margin: '8px 0', fontSize: '14px', color: colors.text.primary }}>
+          {news.content.substring(0, 100)}...
+        </p>
+        <div style={{ display: 'flex', gap: '16px', marginTop: '8px' }}>
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '14px',
+              color: colors.text.secondary,
+            }}
+          >
+            👍 {news.likes}
+          </button>
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '14px',
+              color: colors.text.secondary,
+            }}
+          >
+            💬 टिप्पणी
+          </button>
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '14px',
+              color: colors.text.secondary,
+            }}
+          >
+            📤 साझा करें
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div style={{ paddingBottom: '80px' }} className="page-transition">
@@ -63,100 +174,25 @@ export const NewsPage = React.memo(function NewsPage() {
       {/* News List */}
       <div style={{ padding: '16px' }}>
         {filtered.length > 0 ? (
-          filtered.map((news) => (
-            <div
-              key={news.id}
-              style={{
-                marginBottom: '16px',
-                backgroundColor: colors.neutral.white,
-                border: `1px solid ${colors.border}`,
-                borderRadius: '12px',
-                overflow: 'hidden',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 12px ${colors.shadow}`;
-                (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.boxShadow = 'none';
-                (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-              }}
-            >
-              <div style={{ padding: '16px' }}>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'start',
-                    marginBottom: '8px',
-                  }}
-                >
-                  <div style={{ flex: 1 }}>
-                    <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600' }}>
-                      {news.title}
-                    </h3>
-                    <div style={{ fontSize: '12px', color: colors.text.secondary }}>
-                      {news.category} • {news.date}
-                    </div>
-                  </div>
-                  <span
-                    style={{
-                      padding: '4px 12px',
-                      backgroundColor: colors.primary.light,
-                      color: colors.primary.dark,
-                      borderRadius: '12px',
-                      fontSize: '11px',
-                      fontWeight: '600',
-                      marginLeft: '8px',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {news.category}
-                  </span>
-                </div>
-                <p style={{ margin: '8px 0', fontSize: '14px', color: colors.text.primary }}>
-                  {news.content.substring(0, 100)}...
-                </p>
-                <div style={{ display: 'flex', gap: '16px', marginTop: '8px' }}>
-                  <button
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      color: colors.text.secondary,
-                    }}
-                  >
-                    👍 {news.likes}
-                  </button>
-                  <button
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      color: colors.text.secondary,
-                    }}
-                  >
-                    💬 टिप्पणी
-                  </button>
-                  <button
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      color: colors.text.secondary,
-                    }}
-                  >
-                    📤 साझा करें
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))
+          <>
+            {groupedNews.newNews.length > 0 && (
+              <>
+                <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px', color: colors.primary.dark }}>
+                  नई खबरें
+                </h2>
+                {groupedNews.newNews.map(renderNewsCard)}
+              </>
+            )}
+
+            {groupedNews.oldNews.length > 0 && (
+              <>
+                <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px', marginTop: '24px', color: colors.text.secondary }}>
+                  पुरानी खबरें
+                </h2>
+                {groupedNews.oldNews.map(renderNewsCard)}
+              </>
+            )}
+          </>
         ) : (
           <div style={{ textAlign: 'center', padding: '32px 16px', color: colors.text.secondary }}>
             <p style={{ fontSize: '16px', margin: '0' }}>कोई खबरें नहीं मिलीं</p>
