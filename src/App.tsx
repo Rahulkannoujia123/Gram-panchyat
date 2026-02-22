@@ -20,10 +20,10 @@ import './styles/animations.css';
 
 export function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [_theme, setTheme] = useState<'light' | 'dark'>('light');
   
   // Initialize notifications
-  const { notifications, unreadCount } = useNotifications([
+  const { unreadCount } = useNotifications([
     {
       id: 1,
       title: 'नई खबर',
@@ -49,7 +49,7 @@ export function App() {
 
   const pageConfig = useMemo(
     () => ({
-      home: { title: 'पंचायत', showBack: false },
+      home: { title: 'ग्राम पंचायत', showBack: false },
       news: { title: 'खबरें', showBack: true },
       complaints: { title: 'शिकायतें', showBack: true },
       schemes: { title: 'योजनाएं', showBack: true },
@@ -109,6 +109,8 @@ export function App() {
         title={config.title}
         showBack={config.showBack}
         onBack={() => setCurrentPage('home')}
+        onNotificationsClick={() => setCurrentPage('notifications')}
+        onProfileClick={() => setCurrentPage('profile')}
         notificationCount={unreadCount}
       />
 

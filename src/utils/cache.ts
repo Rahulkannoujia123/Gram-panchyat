@@ -69,7 +69,9 @@ export function memoize<T extends (...args: any[]) => any>(
     // Limit cache size to prevent memory leaks
     if (memoCache.size > 100) {
       const firstKey = memoCache.keys().next().value;
-      memoCache.delete(firstKey);
+      if (firstKey !== undefined) {
+        memoCache.delete(firstKey);
+      }
     }
 
     return result;

@@ -1,4 +1,4 @@
-export const APP_NAME = "पंचायत";
+export const APP_NAME = "ग्राम पंचायत";
 export const APP_SUBTITLE = "आपका गाँव, आपका मंच";
 
 export const ANIMATION_DURATION = {

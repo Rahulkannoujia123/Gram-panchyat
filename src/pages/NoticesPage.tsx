@@ -5,14 +5,15 @@ import { colors } from '../utils/colors';
 export const NoticesPage = React.memo(function NoticesPage() {
   const priorityColors: Record<string, { bg: string; text: string; icon: string }> = {
     high: { bg: colors.status.error, text: colors.neutral.white, icon: '🔴' },
+    medium: { bg: colors.neutral.light, text: colors.text.primary, icon: '🟡' },
     normal: { bg: colors.neutral.light, text: colors.text.primary, icon: '🟡' },
     low: { bg: colors.primary.light, text: colors.primary.dark, icon: '🟢' },
   };
 
   const sortedNotices = useMemo(() => {
-    const priorityOrder = { high: 0, normal: 1, low: 2 };
+    const priorityOrder: Record<string, number> = { high: 0, medium: 1, normal: 1, low: 2 };
     return [...noticesData].sort(
-      (a, b) => priorityOrder[a.priority as keyof typeof priorityOrder] - priorityOrder[b.priority as keyof typeof priorityOrder]
+      (a, b) => (priorityOrder[a.priority] ?? 1) - (priorityOrder[b.priority] ?? 1)
     );
   }, []);
 
@@ -56,7 +57,7 @@ export const NoticesPage = React.memo(function NoticesPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontSize: '16px' }}>{colors_priority.icon}</span>
                   <span style={{ color: colors_priority.text, fontSize: '12px', fontWeight: '600' }}>
-                    {notice.priority === 'high' ? 'अत्यधिक महत्वपूर्ण' : notice.priority === 'normal' ? 'सामान्य' : 'कम प्राथमिकता'}
+                    {notice.priority === 'high' ? 'अत्यधिक महत्वपूर्ण' : (notice.priority === 'medium' || notice.priority === 'normal') ? 'सामान्य' : 'कम प्राथमिकता'}
                   </span>
                 </div>
               </div>

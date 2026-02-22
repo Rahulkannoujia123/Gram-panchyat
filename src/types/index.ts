@@ -19,6 +19,7 @@ export interface NewsItem {
   image?: string;
   likes: number;
   liked?: boolean;
+  icon?: string;
 }
 
 export interface Complaint {
@@ -26,9 +27,9 @@ export interface Complaint {
   title: string;
   description: string;
   date: string;
-  status: string;
+  status: 'pending' | 'in-progress' | 'resolved';
   category: string;
-  upvotes: number;
+  votes: number;
   upvoted?: boolean;
 }
 
@@ -40,6 +41,7 @@ export interface Scheme {
   eligibility: string[];
   deadline?: string;
   category: string;
+  link?: string;
 }
 
 export interface Member {
@@ -49,6 +51,7 @@ export interface Member {
   ward: string;
   phone: string;
   image?: string;
+  avatar?: string;
 }
 
 export interface Emergency {
@@ -56,6 +59,7 @@ export interface Emergency {
   name: string;
   number: string;
   type: string;
+  icon?: string;
 }
 
 export interface Poll {
@@ -79,7 +83,8 @@ export interface Notice {
   title: string;
   content: string;
   date: string;
-  priority: 'high' | 'normal' | 'low';
+  priority: 'high' | 'medium' | 'low' | 'normal';
+  author?: string;
 }
 
 export interface Notification {

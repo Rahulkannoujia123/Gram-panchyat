@@ -1,6 +1,9 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { complaintsData } from '../data';
 import { colors } from '../utils/colors';
+import { Complaint } from '../types';
+
+const complaintCategories = ['सड़क', 'बिजली', 'सफाई', 'पानी', 'अन्य'];
 
 export const ComplaintsPage = React.memo(function ComplaintsPage() {
   const [filter, setFilter] = useState('all');
@@ -22,14 +25,14 @@ export const ComplaintsPage = React.memo(function ComplaintsPage() {
 
   const handleSubmit = useCallback(() => {
     if (newComplaint.trim()) {
-      const complaint = {
+      const complaint: Complaint = {
         id: Math.max(...localComplaints.map((c) => c.id), 0) + 1,
         title: newComplaint,
         description: newComplaint,
         date: new Date().toLocaleDateString('hi-IN'),
         status: 'pending' as const,
         category: selectedCategory,
-        upvotes: 0,
+        votes: 0,
       };
       setLocalComplaints((prev) => [complaint, ...prev]);
       setNewComplaint('');
@@ -39,7 +42,7 @@ export const ComplaintsPage = React.memo(function ComplaintsPage() {
   const handleVote = useCallback(
     (id: number) => {
       setLocalComplaints((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, upvotes: c.upvotes + 1 } : c))
+        prev.map((c) => (c.id === id ? { ...c, votes: c.votes + 1 } : c))
       );
     },
     []
@@ -114,23 +117,28 @@ export const ComplaintsPage = React.memo(function ComplaintsPage() {
 
       {/* Filters */}
       <div style={{ padding: '12px 16px', display: 'flex', gap: '8px', overflowX: 'auto' }}>
-        {['all', 'खुली', 'प्रगति में', 'समाधान'].map((status) => (
+        {[
+          { id: 'all', label: 'सभी' },
+          { id: 'pending', label: 'खुली' },
+          { id: 'in-progress', label: 'प्रगति में' },
+          { id: 'resolved', label: 'समाधान' },
+        ].map((status) => (
           <button
-            key={status}
-            onClick={() => setFilter(status)}
+            key={status.id}
+            onClick={() => setFilter(status.id)}
             style={{
               padding: '8px 16px',
-              backgroundColor: filter === status ? colors.primary.main : colors.neutral.light,
-              color: filter === status ? colors.neutral.white : colors.text.primary,
+              backgroundColor: filter === status.id ? colors.primary.main : colors.neutral.light,
+              color: filter === status.id ? colors.neutral.white : colors.text.primary,
               border: 'none',
               borderRadius: '20px',
               cursor: 'pointer',
               whiteSpace: 'nowrap',
               fontSize: '13px',
-              fontWeight: filter === status ? '600' : '400',
+              fontWeight: filter === status.id ? '600' : '400',
             }}
           >
-            {status === 'all' ? 'सभी' : status}
+            {status.label}
           </button>
         ))}
       </div>
@@ -206,7 +214,7 @@ export const ComplaintsPage = React.memo(function ComplaintsPage() {
                   (e.currentTarget as HTMLElement).style.color = colors.primary.dark;
                 }}
               >
-                👍 समर्थन करें ({complaint.upvotes})
+                👍 समर्थन करें ({complaint.votes})
               </button>
             </div>
           ))

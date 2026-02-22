@@ -4,7 +4,7 @@
 
 export interface SearchableItem {
   id: string | number;
-  text: string;
+  text?: string;
 }
 
 /**
