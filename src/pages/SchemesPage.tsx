@@ -114,6 +114,7 @@ export const SchemesPage = React.memo(function SchemesPage() {
                 )}
 
                 <button
+                  onClick={() => window.open(scheme.link, '_blank')}
                   style={{
                     width: '100%',
                     padding: '10px',
