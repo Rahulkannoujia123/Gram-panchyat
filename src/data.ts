@@ -12,11 +12,11 @@ export const newsData: NewsItem[] = [
 ];
 
 export const complaintsData: Complaint[] = [
-  { id: 1, title: "सड़क पर गड्ढे", description: "मुख्य बाजार की सड़क पर बड़े-बड़े गड्ढे हो गए हैं, बारिश में पानी भर जाता है।", status: "in-progress", date: "2 दिन पहले", category: "सड़क", votes: 24 },
-  { id: 2, title: "स्ट्रीट लाइट खराब", description: "वार्ड 2 की गली नंबर 5 में स्ट्रीट लाइट 15 दिनों से बंद है।", status: "pending", date: "5 दिन पहले", category: "बिजली", votes: 18 },
-  { id: 3, title: "नाली सफाई नहीं हो रही", description: "मंदिर वाली गली की नाली एक महीने से बंद है, बदबू आ रही है।", status: "resolved", date: "1 हफ्ता पहले", category: "सफाई", votes: 32 },
-  { id: 4, title: "हैंडपंप खराब", description: "स्कूल के पास वाला हैंडपंप 10 दिनों से खराब है, पानी नहीं आ रहा।", status: "pending", date: "3 दिन पहले", category: "पानी", votes: 15 },
-  { id: 5, title: "आवारा पशु की समस्या", description: "गाँव में आवारा सांड घूम रहे हैं, लोगों को खतरा है।", status: "in-progress", date: "1 दिन पहले", category: "अन्य", votes: 28 },
+  { id: 1, title: "सड़क पर गड्ढे", description: "मुख्य बाजार की सड़क पर बड़े-बड़े गड्ढे हो गए हैं, बारिश में पानी भर जाता है।", status: "in-progress", date: "2 दिन पहले", time: "10:30 AM", userName: "राम सिंह", zone: "Babiracha", category: "सड़क", votes: 24 },
+  { id: 2, title: "स्ट्रीट लाइट खराब", description: "वार्ड 2 की गली नंबर 5 में स्ट्रीट लाइट 15 दिनों से बंद है।", status: "pending", date: "5 दिन पहले", time: "08:15 PM", userName: "श्याम लाल", zone: "Rampur", category: "बिजली", votes: 18 },
+  { id: 3, title: "नाली सफाई नहीं हो रही", description: "मंदिर वाली गली की नाली एक महीने से बंद है, बदबू आ रही है।", status: "resolved", date: "1 हफ्ता पहले", time: "09:00 AM", userName: "सुनीता देवी", zone: "Hibranpur", category: "सफाई", votes: 32 },
+  { id: 4, title: "हैंडपंप खराब", description: "स्कूल के पास वाला हैंडपंप 10 दिनों से खराब है, पानी नहीं आ रहा।", status: "pending", date: "3 दिन पहले", time: "11:45 AM", userName: "मोहन कुमार", zone: "Bharawar", category: "पानी", votes: 15 },
+  { id: 5, title: "आवारा पशु की समस्या", description: "गाँव में आवारा सांड घूम रहे हैं, लोगों को खतरा है।", status: "in-progress", date: "1 दिन पहले", time: "04:30 PM", userName: "राजेश प्रजापति", zone: "Babiracha", category: "अन्य", votes: 28 },
 ];
 
 export const schemesData: Scheme[] = [

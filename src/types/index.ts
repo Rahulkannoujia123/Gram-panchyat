@@ -23,11 +23,16 @@ export interface NewsItem {
   icon?: string;
 }
 
+export type Zone = 'Babiracha' | 'Rampur' | 'Hibranpur' | 'Bharawar';
+
 export interface Complaint {
   id: number;
   title: string;
   description: string;
   date: string;
+  time: string;
+  userName: string;
+  zone: Zone;
   status: 'pending' | 'in-progress' | 'resolved';
   category: string;
   votes: number;
