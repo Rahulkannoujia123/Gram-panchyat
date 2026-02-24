@@ -1,20 +1,37 @@
-import React, { useState, useMemo } from 'react';
-import { schemesData } from '../data';
+import React, { useState, useMemo, useEffect } from 'react';
 import { colors } from '../utils/colors';
+import { schemeService } from '../services/schemeService';
+import { Scheme } from '../types';
+
+const categories = ['सभी', 'कृषि', 'आवास', 'स्वास्थ्य', 'रोजगार', 'शिक्षा', 'स्वच्छता'];
 
 export const SchemesPage = React.memo(function SchemesPage() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('सभी');
+  const [schemes, setSchemes] = useState<Scheme[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchSchemes = async () => {
+      setLoading(true);
+      const data = await schemeService.getSchemes(selectedCategory);
+      setSchemes(data);
+      setLoading(false);
+    };
+    fetchSchemes();
+  }, [selectedCategory]);
 
   const filtered = useMemo(() => {
-    return schemesData.filter((scheme) =>
-      scheme.name.toLowerCase().includes(searchTerm.toLowerCase())
+    return schemes.filter((scheme) =>
+      scheme.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      scheme.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm]);
+  }, [searchTerm, schemes]);
 
   return (
     <div style={{ paddingBottom: '80px' }} className="page-transition">
-      {/* Search */}
-      <div style={{ padding: '16px', backgroundColor: colors.neutral.light }}>
+      {/* Search & Categories */}
+      <div style={{ padding: '16px', backgroundColor: colors.neutral.light, position: 'sticky', top: 0, zIndex: 10 }}>
         <input
           type="text"
           placeholder="योजनाएं खोजें..."
@@ -23,17 +40,49 @@ export const SchemesPage = React.memo(function SchemesPage() {
           style={{
             width: '100%',
             padding: '12px',
-            border: `1px solid ${colors.border}`,
-            borderRadius: '8px',
+            border: `2px solid ${colors.primary.main}`,
+            borderRadius: '12px',
             fontSize: '14px',
             boxSizing: 'border-box',
+            marginBottom: '12px',
+            boxShadow: `0 2px 8px ${colors.shadow}`
           }}
         />
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              style={{
+                padding: '6px 16px',
+                borderRadius: '20px',
+                border: 'none',
+                backgroundColor: selectedCategory === cat ? colors.primary.main : colors.neutral.white,
+                color: selectedCategory === cat ? colors.neutral.white : colors.text.primary,
+                fontSize: '13px',
+                fontWeight: '600',
+                whiteSpace: 'nowrap',
+                cursor: 'pointer',
+                boxShadow: `0 1px 3px ${colors.shadow}`
+              }}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ padding: '16px', backgroundColor: colors.primary.light, margin: '16px', borderRadius: '12px', border: `1px solid ${colors.primary.main}` }}>
+        <p style={{ margin: 0, fontSize: '13px', color: colors.primary.dark, lineHeight: '1.5' }}>
+          <strong>हमारा विजन:</strong> पिण्डरा के हर नागरिक तक सरकारी योजनाओं की जानकारी सही समय पर पहुंचाना ताकि उनका जीवन आसान हो सके।
+        </p>
       </div>
 
       {/* Schemes List */}
-      <div style={{ padding: '16px' }}>
-        {filtered.length > 0 ? (
+      <div style={{ padding: '16px', paddingTop: 0 }}>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px' }}>लोड हो रहा है...</div>
+        ) : filtered.length > 0 ? (
           filtered.map((scheme) => (
             <div
               key={scheme.id}
@@ -113,10 +162,14 @@ export const SchemesPage = React.memo(function SchemesPage() {
                   </div>
                 )}
 
-                <button
+                <a
+                  href={scheme.link || "https://www.myscheme.gov.in/"}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   style={{
+                    display: 'block',
                     width: '100%',
-                    padding: '10px',
+                    padding: '12px',
                     backgroundColor: colors.primary.main,
                     color: colors.neutral.white,
                     border: 'none',
@@ -124,17 +177,14 @@ export const SchemesPage = React.memo(function SchemesPage() {
                     cursor: 'pointer',
                     fontWeight: '600',
                     fontSize: '14px',
+                    textAlign: 'center',
+                    textDecoration: 'none',
                     transition: 'all 0.3s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.backgroundColor = colors.primary.dark;
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.backgroundColor = colors.primary.main;
+                    boxSizing: 'border-box'
                   }}
                 >
-                  आवेदन करें
-                </button>
+                  आधिकारिक वेबसाइट पर देखें
+                </a>
               </div>
             </div>
           ))

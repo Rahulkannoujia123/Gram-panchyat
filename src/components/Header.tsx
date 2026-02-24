@@ -1,6 +1,7 @@
 import React from 'react';
 import { colors } from '../utils/colors';
 import { Village } from '../types';
+import { pindraVillages } from '../data/pindraVillages';
 
 interface HeaderProps {
   title: string;
@@ -13,14 +14,6 @@ interface HeaderProps {
   selectedVillage?: Village | 'All';
   onVillageChange?: (village: Village | 'All') => void;
 }
-
-const VILLAGES_DISPLAY = [
-  { id: 'All', name: 'सभी गांव' },
-  { id: 'Babiracha', name: 'बबिराचा' },
-  { id: 'Rampur', name: 'रामपुर' },
-  { id: 'Hibranpur', name: 'हिब्रनपुर' },
-  { id: 'Bharawar', name: 'भरावर' },
-];
 
 export const Header = React.memo(function Header({
   title,
@@ -141,8 +134,16 @@ export const Header = React.memo(function Header({
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(255,255,255,0.15)', padding: '4px 8px', borderRadius: '6px' }}>
           <span style={{ fontSize: '12px', fontWeight: '500' }}>ग्राम:</span>
           <select
-            value={selectedVillage}
-            onChange={(e) => onVillageChange(e.target.value as Village | 'All')}
+            value={selectedVillage === 'All' ? 'All' : selectedVillage.id}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val === 'All') {
+                onVillageChange('All');
+              } else {
+                const village = pindraVillages.find(v => v.id === Number(val));
+                if (village) onVillageChange(village);
+              }
+            }}
             style={{
               background: 'none',
               border: 'none',
@@ -154,9 +155,10 @@ export const Header = React.memo(function Header({
               flex: 1,
             }}
           >
-            {VILLAGES_DISPLAY.map((v) => (
+            <option value="All" style={{ color: colors.text.primary }}>सभी गांव</option>
+            {pindraVillages.map((v) => (
               <option key={v.id} value={v.id} style={{ color: colors.text.primary }}>
-                {v.name}
+                {v.hindiName || v.name}
               </option>
             ))}
           </select>

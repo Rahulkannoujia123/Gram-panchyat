@@ -18,7 +18,7 @@ export const NoticesPage = React.memo(function NoticesPage({ selectedVillage }: 
   const sortedNotices = useMemo(() => {
     const priorityOrder: Record<string, number> = { high: 0, medium: 1, normal: 1, low: 2 };
     const filtered = noticesData.filter(notice =>
-      selectedVillage === 'All' || notice.village === selectedVillage || notice.village === 'All'
+      selectedVillage === 'All' || notice.village === 'All' || (typeof notice.village !== 'string' && notice.village.id === selectedVillage.id)
     );
     return [...filtered].sort(
       (a, b) => (priorityOrder[a.priority] ?? 1) - (priorityOrder[b.priority] ?? 1)

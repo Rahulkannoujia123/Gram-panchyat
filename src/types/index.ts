@@ -28,6 +28,7 @@ export interface NewsItem {
 
 export interface Complaint {
   id: number;
+  trackingId?: string;
   title: string;
   description: string;
   date: string;
@@ -38,6 +39,7 @@ export interface Complaint {
   category: string;
   votes: number;
   upvoted?: boolean;
+  remarks?: string;
 }
 
 export interface Scheme {

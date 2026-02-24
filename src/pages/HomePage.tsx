@@ -8,27 +8,22 @@ interface HomePageProps {
   selectedVillage: Village | 'All';
 }
 
-const VILLAGE_MAP: Record<string, string> = {
-  'Babiracha': 'बबिराचा',
-  'Rampur': 'रामपुर',
-  'Hibranpur': 'हिब्रनपुर',
-  'Bharawar': 'भरावर',
-  'All': 'सभी गांव'
-};
-
 export const HomePage = React.memo(function HomePage({ onNavigate, selectedVillage }: HomePageProps) {
-  const villageDisplayName = useMemo(() => VILLAGE_MAP[selectedVillage] || selectedVillage, [selectedVillage]);
+  const villageDisplayName = useMemo(() => {
+    if (selectedVillage === 'All') return 'सभी गांव';
+    return selectedVillage.hindiName || selectedVillage.name;
+  }, [selectedVillage]);
 
   const filteredNews = useMemo(() => {
     return selectedVillage === 'All'
       ? newsData
-      : newsData.filter(n => n.village === selectedVillage);
+      : newsData.filter(n => n.village.id === selectedVillage.id);
   }, [selectedVillage]);
 
   const filteredComplaints = useMemo(() => {
     return selectedVillage === 'All'
       ? complaintsData
-      : complaintsData.filter(c => c.village === selectedVillage);
+      : complaintsData.filter(c => c.village.id === selectedVillage.id);
   }, [selectedVillage]);
 
   const unreadNews = useMemo(() => {
@@ -43,7 +38,11 @@ export const HomePage = React.memo(function HomePage({ onNavigate, selectedVilla
     { label: 'खबरें', count: filteredNews.length, page: 'news' as Page },
     { label: 'शिकायतें', count: filteredComplaints.length, page: 'complaints' as Page },
     { label: 'योजनाएं', count: 6, page: 'schemes' as Page },
-    { label: 'सदस्य', count: membersData.filter(m => selectedVillage === 'All' || m.village === selectedVillage || m.village === 'Constituency').length, page: 'members' as Page },
+    { label: 'सदस्य', count: membersData.filter(m => {
+      if (selectedVillage === 'All') return true;
+      if (m.village === 'Constituency') return true;
+      return m.village.id === selectedVillage.id;
+    }).length, page: 'members' as Page },
   ];
 
   const categories = [
@@ -260,6 +259,41 @@ export const HomePage = React.memo(function HomePage({ onNavigate, selectedVilla
               <span>{cat.label}</span>
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* Vision & Benefits Card */}
+      <div style={{ padding: '16px', paddingTop: '0' }}>
+        <div style={{
+          background: 'linear-gradient(135deg, #FFF9C4 0%, #FFF59D 100%)',
+          padding: '20px',
+          borderRadius: '16px',
+          border: '1px solid #FBC02D',
+          boxShadow: `0 4px 10px ${colors.shadow}`
+        }}>
+          <h3 style={{ margin: '0 0 10px 0', fontSize: '18px', color: '#F57F17' }}>🌟 हमारा विजन</h3>
+          <p style={{ margin: 0, fontSize: '14px', color: '#5D4037', lineHeight: '1.6' }}>
+            पिण्डरा के हर गाँव को डिजिटल बनाना। इस ऐप के माध्यम से आप अपनी समस्याओं का समाधान पा सकते हैं और सरकारी योजनाओं का लाभ सीधे उठा सकते हैं।
+          </p>
+          <div style={{ marginTop: '12px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <div style={{ backgroundColor: 'white', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }}>⚡ तेज समाधान</div>
+            <div style={{ backgroundColor: 'white', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }}>📱 आसान पहुंच</div>
+            <button
+              onClick={() => onNavigate('complaints')}
+              style={{
+                backgroundColor: colors.primary.main,
+                color: 'white',
+                padding: '6px 16px',
+                borderRadius: '20px',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              🔍 शिकायत ट्रैक करें
+            </button>
+          </div>
         </div>
       </div>
 

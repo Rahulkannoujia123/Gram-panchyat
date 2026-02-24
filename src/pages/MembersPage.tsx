@@ -14,8 +14,8 @@ export const MembersPage = React.memo(function MembersPage({ selectedVillage }: 
     return membersData.filter((member) => {
       const nameMatch = member.name.toLowerCase().includes(searchTerm.toLowerCase());
       const villageMatch = selectedVillage === 'All'
-        || member.village === selectedVillage
-        || member.village === 'Constituency';
+        || member.village === 'Constituency'
+        || (typeof member.village !== 'string' && member.village.id === selectedVillage.id);
       return nameMatch && villageMatch;
     });
   }, [searchTerm, selectedVillage]);

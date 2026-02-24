@@ -12,7 +12,7 @@ export const PollsPage = React.memo(function PollsPage({ selectedVillage }: Poll
 
   const filteredPolls = useMemo(() => {
     return localPolls.filter(poll =>
-      selectedVillage === 'All' || poll.village === selectedVillage || poll.village === 'All'
+      selectedVillage === 'All' || poll.village === 'All' || (typeof poll.village !== 'string' && poll.village.id === selectedVillage.id)
     );
   }, [localPolls, selectedVillage]);
 

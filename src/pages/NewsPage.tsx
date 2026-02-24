@@ -17,7 +17,7 @@ export const NewsPage = React.memo(function NewsPage({ selectedVillage }: NewsPa
     return newsData.filter((news) => {
       const categoryMatch = selectedCategory === 'सभी' || news.category === selectedCategory;
       const searchMatch = news.title.toLowerCase().includes(searchTerm.toLowerCase());
-      const villageMatch = selectedVillage === 'All' || news.village === selectedVillage;
+      const villageMatch = selectedVillage === 'All' || news.village.id === selectedVillage.id;
       return categoryMatch && searchMatch && villageMatch;
     });
   }, [selectedCategory, searchTerm, selectedVillage]);
