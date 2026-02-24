@@ -1,8 +1,13 @@
 import React, { useMemo } from 'react';
 import { noticesData } from '../data';
 import { colors } from '../utils/colors';
+import { Village } from '../types';
 
-export const NoticesPage = React.memo(function NoticesPage() {
+interface NoticesPageProps {
+  selectedVillage: Village | 'All';
+}
+
+export const NoticesPage = React.memo(function NoticesPage({ selectedVillage }: NoticesPageProps) {
   const priorityColors: Record<string, { bg: string; text: string; icon: string }> = {
     high: { bg: colors.status.error, text: colors.neutral.white, icon: '🔴' },
     medium: { bg: colors.neutral.light, text: colors.text.primary, icon: '🟡' },
@@ -12,10 +17,13 @@ export const NoticesPage = React.memo(function NoticesPage() {
 
   const sortedNotices = useMemo(() => {
     const priorityOrder: Record<string, number> = { high: 0, medium: 1, normal: 1, low: 2 };
-    return [...noticesData].sort(
+    const filtered = noticesData.filter(notice =>
+      selectedVillage === 'All' || notice.village === selectedVillage || notice.village === 'All'
+    );
+    return [...filtered].sort(
       (a, b) => (priorityOrder[a.priority] ?? 1) - (priorityOrder[b.priority] ?? 1)
     );
-  }, []);
+  }, [selectedVillage]);
 
   return (
     <div style={{ paddingBottom: '80px' }} className="page-transition">

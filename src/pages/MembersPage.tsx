@@ -1,15 +1,24 @@
 import React, { useState, useMemo } from 'react';
 import { membersData } from '../data';
 import { colors } from '../utils/colors';
+import { Village } from '../types';
 
-export const MembersPage = React.memo(function MembersPage() {
+interface MembersPageProps {
+  selectedVillage: Village | 'All';
+}
+
+export const MembersPage = React.memo(function MembersPage({ selectedVillage }: MembersPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filtered = useMemo(() => {
-    return membersData.filter((member) =>
-      member.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [searchTerm]);
+    return membersData.filter((member) => {
+      const nameMatch = member.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const villageMatch = selectedVillage === 'All'
+        || member.village === selectedVillage
+        || member.village === 'Constituency';
+      return nameMatch && villageMatch;
+    });
+  }, [searchTerm, selectedVillage]);
 
   return (
     <div style={{ paddingBottom: '80px' }} className="page-transition">

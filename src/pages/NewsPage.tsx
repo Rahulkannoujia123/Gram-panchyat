@@ -1,9 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { newsData } from '../data';
 import { colors } from '../utils/colors';
-import { NewsItem } from '../types';
+import { NewsItem, Village } from '../types';
 
-export const NewsPage = React.memo(function NewsPage() {
+interface NewsPageProps {
+  selectedVillage: Village | 'All';
+}
+
+export const NewsPage = React.memo(function NewsPage({ selectedVillage }: NewsPageProps) {
   const [selectedCategory, setSelectedCategory] = useState('सभी');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -13,9 +17,10 @@ export const NewsPage = React.memo(function NewsPage() {
     return newsData.filter((news) => {
       const categoryMatch = selectedCategory === 'सभी' || news.category === selectedCategory;
       const searchMatch = news.title.toLowerCase().includes(searchTerm.toLowerCase());
-      return categoryMatch && searchMatch;
+      const villageMatch = selectedVillage === 'All' || news.village === selectedVillage;
+      return categoryMatch && searchMatch && villageMatch;
     });
-  }, [selectedCategory, searchTerm]);
+  }, [selectedCategory, searchTerm, selectedVillage]);
 
   const groupedNews = useMemo(() => {
     const sorted = [...filtered].sort(
