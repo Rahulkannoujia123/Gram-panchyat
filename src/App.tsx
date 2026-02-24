@@ -129,7 +129,7 @@ export function App() {
         onProfileClick={() => setCurrentPage('profile')}
         notificationCount={unreadCount}
         selectedVillage={selectedVillage}
-        onVillageChange={setSelectedVillage}
+        onVillageChange={currentPage === 'home' ? undefined : setSelectedVillage}
       />
 
       <main style={{ flex: 1, overflow: 'auto', paddingBottom: '80px' }}>

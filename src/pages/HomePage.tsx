@@ -8,7 +8,17 @@ interface HomePageProps {
   selectedVillage: Village | 'All';
 }
 
+const VILLAGE_MAP: Record<string, string> = {
+  'Babiracha': 'बबिराचा',
+  'Rampur': 'रामपुर',
+  'Hibranpur': 'हिब्रनपुर',
+  'Bharawar': 'भरावर',
+  'All': 'सभी गांव'
+};
+
 export const HomePage = React.memo(function HomePage({ onNavigate, selectedVillage }: HomePageProps) {
+  const villageDisplayName = useMemo(() => VILLAGE_MAP[selectedVillage] || selectedVillage, [selectedVillage]);
+
   const filteredNews = useMemo(() => {
     return selectedVillage === 'All'
       ? newsData
@@ -62,23 +72,95 @@ export const HomePage = React.memo(function HomePage({ onNavigate, selectedVilla
       >
         <h2 style={{ margin: '0 0 8px 0', fontSize: '28px' }}>पिण्डरा विधानसभा</h2>
         <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>
-          {selectedVillage === 'All' ? 'संपूर्ण विधानसभा की प्रगति' : `${selectedVillage} ग्राम की प्रगति`}
+          {selectedVillage === 'All' ? 'संपूर्ण विधानसभा की प्रगति' : `${villageDisplayName} ग्राम की प्रगति`}
         </p>
       </div>
 
-      {/* Constituency Level Info */}
+      {/* Constituency Level Info - Improved Design */}
       {selectedVillage === 'All' && (
-        <div style={{ padding: '16px', backgroundColor: colors.primary.light, margin: '16px', borderRadius: '12px', border: `1px solid ${colors.primary.main}` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ fontSize: '40px' }}>🏛️</div>
-            <div>
-              <div style={{ fontSize: '14px', color: colors.primary.dark, fontWeight: '600' }}>विधायक संपर्क</div>
-              <div style={{ fontSize: '18px', fontWeight: 'bold' }}>डॉ. अवधेश सिंह</div>
-              <div style={{ fontSize: '12px', color: colors.text.secondary }}>पिण्डरा विधानसभा, वाराणसी</div>
+        <div style={{
+          margin: '16px',
+          backgroundColor: colors.neutral.white,
+          borderRadius: '16px',
+          overflow: 'hidden',
+          boxShadow: `0 4px 15px ${colors.shadow}`,
+          border: `1px solid ${colors.border}`
+        }}>
+          <div style={{
+            backgroundColor: colors.primary.main,
+            color: colors.neutral.white,
+            padding: '8px 16px',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            display: 'inline-block',
+            borderBottomRightRadius: '12px'
+          }}>
+            क्षेत्रीय विधायक
+          </div>
+          <div style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{
+              width: '60px',
+              height: '60px',
+              backgroundColor: colors.primary.light,
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '32px'
+            }}>
+              👨‍💼
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '20px', fontWeight: 'bold', color: colors.text.primary }}>डॉ. अवधेश सिंह</div>
+              <div style={{ fontSize: '13px', color: colors.text.secondary, marginBottom: '8px' }}>पिण्डरा विधानसभा, वाराणसी</div>
+              <a
+                href="tel:9415200000"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  backgroundColor: colors.primary.light,
+                  color: colors.primary.dark,
+                  padding: '4px 12px',
+                  borderRadius: '20px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  textDecoration: 'none'
+                }}
+              >
+                📞 संपर्क करें
+              </a>
             </div>
           </div>
         </div>
       )}
+
+      {/* Search Bar - Advance Feature */}
+      <div style={{ padding: '16px', marginTop: '-20px' }}>
+        <div style={{
+          backgroundColor: colors.neutral.white,
+          borderRadius: '12px',
+          padding: '4px 12px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          boxShadow: `0 4px 12px ${colors.shadow}`,
+          border: `1px solid ${colors.border}`
+        }}>
+          <span style={{ fontSize: '18px' }}>🔍</span>
+          <input
+            type="text"
+            placeholder="योजनाएं, खबरें या गाँव खोजें..."
+            style={{
+              border: 'none',
+              outline: 'none',
+              padding: '12px 0',
+              width: '100%',
+              fontSize: '14px'
+            }}
+          />
+        </div>
+      </div>
 
       {/* Stats */}
       <div style={{ padding: '16px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
@@ -115,13 +197,33 @@ export const HomePage = React.memo(function HomePage({ onNavigate, selectedVilla
         ))}
       </div>
 
-      {/* Quick Access */}
+      {/* Services Section - Advance/Modern look */}
       <div style={{ padding: '16px', paddingTop: '0' }}>
-        <h3 style={{ marginTop: '16px', marginBottom: '12px', fontSize: '16px', fontWeight: '600' }}>
-          जल्दी पहुंचें
-        </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-          {categories.map((cat) => (
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '12px'
+        }}>
+          <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 'bold', color: colors.text.primary }}>
+            मुख्य सेवाएं
+          </h3>
+          <button
+            onClick={() => onNavigate('villages')}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: colors.primary.main,
+              fontSize: '14px',
+              fontWeight: '600'
+            }}
+          >
+            सभी देखें ›
+          </button>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px 12px' }}>
+          {categories.slice(0, 8).map((cat) => (
             <button
               key={cat.label}
               onClick={() => onNavigate(cat.page)}
@@ -135,17 +237,26 @@ export const HomePage = React.memo(function HomePage({ onNavigate, selectedVilla
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: '6px',
-                fontSize: '12px',
+                fontSize: '11px',
+                fontWeight: '500',
                 transition: 'all 0.2s ease',
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.backgroundColor = colors.primary.light;
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.backgroundColor = colors.neutral.light;
+                width: '100%',
               }}
             >
-              <span style={{ fontSize: '24px' }}>{cat.icon}</span>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                backgroundColor: colors.neutral.white,
+                borderRadius: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '24px',
+                boxShadow: `0 2px 6px ${colors.shadow}`,
+                border: `1px solid ${colors.border}`
+              }}>
+                {cat.icon}
+              </div>
               <span>{cat.label}</span>
             </button>
           ))}

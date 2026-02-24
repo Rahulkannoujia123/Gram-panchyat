@@ -21,9 +21,10 @@ export const VillagesPage = React.memo(function VillagesPage({ onNavigate }: Vil
   const filteredVillages = useMemo(() => {
     return villagesData.filter(village =>
       village.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (village.hindiName?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
       (village.description?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false)
     );
-  }, [searchTerm]);
+  }, [searchTerm, villagesData]);
 
   return (
     <div style={{ paddingBottom: '80px' }} className="page-transition">
@@ -141,7 +142,7 @@ export const VillagesPage = React.memo(function VillagesPage({ onNavigate }: Vil
             >
               <div style={{ fontSize: '28px', marginBottom: '8px' }}>{village.icon}</div>
               <div style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '4px', color: colors.primary.main }}>
-                {village.name}
+                {village.hindiName || village.name}
               </div>
               <div style={{ fontSize: '12px', color: colors.text.secondary, marginBottom: '4px' }}>
                 👥 {village.population.toLocaleString('hi-IN')} लोग

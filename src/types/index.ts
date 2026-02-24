@@ -26,8 +26,6 @@ export interface NewsItem {
   village: Village;
 }
 
-export type Village = 'Babiracha' | 'Rampur' | 'Hibranpur' | 'Bharawar';
-
 export interface Complaint {
   id: number;
   title: string;
@@ -131,6 +129,7 @@ export interface UserProfile {
 export interface Village {
   id: number;
   name: string;
+  hindiName?: string;
   population: number;
   wards: number;
   sarpanch?: string;

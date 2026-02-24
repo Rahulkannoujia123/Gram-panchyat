@@ -28,6 +28,7 @@ export const VillageSelector = React.memo(function VillageSelector({
     const term = searchTerm.toLowerCase();
     return villages.filter(v => 
       v.name.toLowerCase().includes(term) || 
+      (v.hindiName?.toLowerCase().includes(term) ?? false) ||
       v.description?.toLowerCase().includes(term)
     );
   }, [villages, searchTerm]);
@@ -77,7 +78,7 @@ export const VillageSelector = React.memo(function VillageSelector({
         <input
           type="text"
           placeholder={placeholder}
-          value={isOpen ? searchTerm : selectedVillage?.name || placeholder}
+          value={isOpen ? searchTerm : (selectedVillage?.hindiName || selectedVillage?.name || placeholder)}
           onChange={(e) => {
             setSearchTerm(e.target.value);
             setIsOpen(true);
@@ -152,7 +153,7 @@ export const VillageSelector = React.memo(function VillageSelector({
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <div style={{ fontWeight: '500', color: colors.text.primary }}>
-                      {village.icon} {village.name}
+                      {village.icon} {village.hindiName || village.name}
                     </div>
                     <div style={{ fontSize: '12px', color: colors.text.secondary, marginTop: '4px' }}>
                       जनसंख्या: {village.population.toLocaleString('hi-IN')} | वार्ड: {village.wards}

@@ -14,7 +14,13 @@ interface HeaderProps {
   onVillageChange?: (village: Village | 'All') => void;
 }
 
-const VILLAGES: (Village | 'All')[] = ['All', 'Babiracha', 'Rampur', 'Hibranpur', 'Bharawar'];
+const VILLAGES_DISPLAY = [
+  { id: 'All', name: 'सभी गांव' },
+  { id: 'Babiracha', name: 'बबिराचा' },
+  { id: 'Rampur', name: 'रामपुर' },
+  { id: 'Hibranpur', name: 'हिब्रनपुर' },
+  { id: 'Bharawar', name: 'भरावर' },
+];
 
 export const Header = React.memo(function Header({
   title,
@@ -148,9 +154,9 @@ export const Header = React.memo(function Header({
               flex: 1,
             }}
           >
-            {VILLAGES.map((v) => (
-              <option key={v} value={v} style={{ color: colors.text.primary }}>
-                {v === 'All' ? 'सभी गांव' : v}
+            {VILLAGES_DISPLAY.map((v) => (
+              <option key={v.id} value={v.id} style={{ color: colors.text.primary }}>
+                {v.name}
               </option>
             ))}
           </select>
