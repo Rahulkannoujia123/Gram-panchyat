@@ -8,7 +8,9 @@ export type Page =
   | 'polls' 
   | 'notices'
   | 'notifications'
-  | 'profile';
+  | 'profile'
+  | 'villages'
+  | 'village-detail';
 
 export interface NewsItem {
   id: number;
@@ -125,3 +127,19 @@ export interface UserProfile {
     };
   };
 }
+
+export interface Village {
+  id: number;
+  name: string;
+  population: number;
+  wards: number;
+  sarpanch?: string;
+  phone?: string;
+  icon?: string;
+  description?: string;
+}
+
+export type VillageNews = NewsItem & { villageId: number };
+export type VillageComplaint = Complaint & { villageId: number };
+export type VillageScheme = Scheme & { villageId: number };
+export type VillageNotice = Notice & { villageId: number };

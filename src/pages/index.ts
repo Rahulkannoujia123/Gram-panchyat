@@ -8,3 +8,5 @@ export { PollsPage } from './PollsPage';
 export { NoticesPage } from './NoticesPage';
 export { NotificationsPage } from './NotificationsPage';
 export { ProfilePage } from './ProfilePage';
+export { VillagesPage } from './VillagesPage';
+export { VillageDetailPage } from './VillageDetailPage';
