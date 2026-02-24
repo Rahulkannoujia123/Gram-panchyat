@@ -14,7 +14,7 @@ interface HeaderProps {
   onVillageChange?: (village: Village | 'All') => void;
 }
 
-const VILLAGES: (Village | 'All')[] = ['All', 'Babiracha', 'Rampur', 'Hibranpur', 'Bharawar'];
+const VILLAGES: (Village | 'All')[] = ['All', 'पिण्डरा', 'फूलपुर', 'सिंधौरा', 'बाबतपुर', 'खालिसपुर'];
 
 export const Header = React.memo(function Header({
   title,
