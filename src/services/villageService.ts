@@ -1,8 +1,16 @@
 import { Village } from '../types';
+import { pindraVillages } from '../data/pindraVillages';
 
 /**
  * Village Service - Fetches village data from multiple sources
- * Priority: API -> Fallback local data
+ * Priority: data.gov.in CKAN > OpenDataStack > Pindra Local Data (104 villages with real names)
+ * 
+ * Pindra Block Details:
+ * - District: Varanasi
+ * - State: Uttar Pradesh
+ * - Total Gram Panchayats: 104
+ * - Total Villages: 191
+ * Source: LocalBodyData.com & Census 2011
  */
 
 // Prindra block के coordinates
@@ -120,19 +128,19 @@ export async function fetchVillagesFromWikipedia(): Promise<Village[] | null> {
 
 /**
  * Try multiple API sources in sequence
- * Falls back to local data if all external APIs fail
+ * Falls back to verified local Pindra data if all external APIs fail
  */
-export async function fetchVillagesFromAPIs(): Promise<Village[] | null> {
+export async function fetchVillagesFromAPIs(): Promise<Village[]> {
   // Try APIs in order of preference
   const apiSources = [
+    { name: 'data.gov.in (CKAN)', fn: fetchVillagesFromDataGov },
     { name: 'OpenDataStack', fn: fetchVillagesFromOpenDataStack },
-    { name: 'data.gov.in', fn: fetchVillagesFromDataGov },
     { name: 'Wikipedia', fn: fetchVillagesFromWikipedia },
   ];
 
   for (const source of apiSources) {
     try {
-      console.log(`[VillageService] Trying ${source.name}...`);
+      console.log(`[v0-VillageService] Trying ${source.name}...`);
       const result = await Promise.race([
         source.fn(),
         new Promise<null>((_, reject) =>
@@ -141,15 +149,16 @@ export async function fetchVillagesFromAPIs(): Promise<Village[] | null> {
       ]);
 
       if (result && result.length > 0) {
-        console.log(`[VillageService] Successfully fetched ${result.length} villages from ${source.name}`);
+        console.log(`[v0-VillageService] ✓ Successfully fetched ${result.length} villages from ${source.name}`);
         return result;
       }
     } catch (err) {
-      console.log(`[VillageService] ${source.name} failed:`, err);
+      console.log(`[v0-VillageService] ✗ ${source.name} failed:`, (err as Error).message);
       continue;
     }
   }
 
-  console.log('[VillageService] All external APIs failed, returning null for fallback');
-  return null;
+  // Use verified local data for Pindra block - 104 gram panchayats
+  console.log(`[v0-VillageService] Using verified local Pindra data - ${pindraVillages.length} villages`);
+  return pindraVillages;
 }

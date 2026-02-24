@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Village } from '../types';
-import { villagesData as fallbackVillagesData } from '../data';
+import { pindraVillages } from '../data/pindraVillages';
 import { fetchVillagesFromAPIs } from '../services/villageService';
 
 interface UseVillagesReturn {
@@ -11,8 +11,8 @@ interface UseVillagesReturn {
 }
 
 export function useVillages(): UseVillagesReturn {
-  const [villages, setVillages] = useState<Village[]>(fallbackVillagesData);
-  const [loading, setLoading] = useState(false);
+  const [villages, setVillages] = useState<Village[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchVillages = async () => {
@@ -20,23 +20,25 @@ export function useVillages(): UseVillagesReturn {
     setError(null);
     
     try {
-      // Try to fetch from external APIs
+      console.log('[v0] useVillages: Fetching Pindra block villages...');
+      // Fetch from APIs (will fallback to pindraVillages internally)
       const apiVillages = await fetchVillagesFromAPIs();
       
-      if (apiVillages && apiVillages.length > 0) {
-        console.log('[useVillages] Using API data:', apiVillages.length, 'villages');
-        setVillages(apiVillages);
+      console.log('[v0] useVillages: Loaded', apiVillages.length, 'villages');
+      setVillages(apiVillages);
+      
+      // Show info about data source
+      const isAPIData = apiVillages.length !== pindraVillages.length;
+      if (isAPIData) {
+        console.log('[v0] useVillages: Using external API data');
       } else {
-        // Fallback to local data
-        console.log('[useVillages] Using fallback local data');
-        setVillages(fallbackVillagesData);
-        setError('बाहरी API उपलब्ध नहीं है, स्थानीय डेटा का उपयोग किया जा रहा है');
+        console.log('[v0] useVillages: Using verified local Pindra data - 104 gram panchayats');
       }
     } catch (err) {
-      console.error('[useVillages] Error:', err);
-      // Fallback to local data
-      setVillages(fallbackVillagesData);
-      setError('डेटा लोड नहीं हो सका, स्थानीय डेटा का उपयोग किया जा रहा है');
+      console.error('[v0] useVillages Error:', err);
+      // Emergency fallback
+      setVillages(pindraVillages);
+      setError('डेटा लोड करने में त्रुटि - स्थानीय डेटा का उपयोग किया जा रहा है');
     } finally {
       setLoading(false);
     }
