@@ -190,6 +190,19 @@ Target metrics achieved:
 
 ### Deploy to Vercel
 
+The project is configured for automated deployment via GitHub Actions.
+
+#### Automated Deployment (GitHub Actions)
+1. Push code to the `main` branch of your GitHub repository.
+2. The GitHub Action will automatically build and deploy the project to Vercel.
+
+**Required GitHub Secrets:**
+To enable this, you must add the following secrets to your GitHub repository (Settings > Secrets and variables > Actions):
+- `VERCEL_TOKEN`: Your Vercel Personal Access Token.
+- `VERCEL_ORG_ID`: Your Vercel Organization ID.
+- `VERCEL_PROJECT_ID`: Your Vercel Project ID.
+
+#### Manual Import
 1. Push code to GitHub
 2. Import repository in Vercel
 3. Vercel automatically detects Vite configuration

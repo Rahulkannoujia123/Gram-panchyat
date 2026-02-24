@@ -94,6 +94,7 @@ export function App() {
         return <HomePage {...props} />;
     }
   }, [currentPage, handleThemeChange, selectedVillage]);
+  }, [currentPage, handleThemeChange, selectedVillage, selectedVillageId]);
 
   return (
     <div
