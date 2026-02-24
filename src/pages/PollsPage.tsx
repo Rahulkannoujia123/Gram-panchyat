@@ -1,9 +1,20 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { pollsData } from '../data';
 import { colors } from '../utils/colors';
+import { Village } from '../types';
 
-export const PollsPage = React.memo(function PollsPage() {
+interface PollsPageProps {
+  selectedVillage: Village | 'All';
+}
+
+export const PollsPage = React.memo(function PollsPage({ selectedVillage }: PollsPageProps) {
   const [localPolls, setLocalPolls] = useState(pollsData);
+
+  const filteredPolls = useMemo(() => {
+    return localPolls.filter(poll =>
+      selectedVillage === 'All' || poll.village === selectedVillage || poll.village === 'All'
+    );
+  }, [localPolls, selectedVillage]);
 
   const handleVote = useCallback(
     (pollId: number, optionId: number) => {
@@ -38,7 +49,7 @@ export const PollsPage = React.memo(function PollsPage() {
     <div style={{ paddingBottom: '80px' }} className="page-transition">
       {/* Polls List */}
       <div style={{ padding: '16px' }}>
-        {localPolls.map((poll) => {
+        {filteredPolls.map((poll) => {
           const totalVotes = getTotalVotes(poll.id);
 
           return (

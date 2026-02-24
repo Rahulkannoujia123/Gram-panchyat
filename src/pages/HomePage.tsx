@@ -1,25 +1,39 @@
 import React, { useMemo } from 'react';
-import { Page } from '../types';
+import { Page, Village } from '../types';
 import { colors } from '../utils/colors';
-import { newsData, complaintsData } from '../data';
+import { newsData, complaintsData, membersData } from '../data';
 
 interface HomePageProps {
   onNavigate: (page: Page) => void;
+  selectedVillage: Village | 'All';
 }
 
-export const HomePage = React.memo(function HomePage({ onNavigate }: HomePageProps) {
+export const HomePage = React.memo(function HomePage({ onNavigate, selectedVillage }: HomePageProps) {
+  const filteredNews = useMemo(() => {
+    return selectedVillage === 'All'
+      ? newsData
+      : newsData.filter(n => n.village === selectedVillage);
+  }, [selectedVillage]);
+
+  const filteredComplaints = useMemo(() => {
+    return selectedVillage === 'All'
+      ? complaintsData
+      : complaintsData.filter(c => c.village === selectedVillage);
+  }, [selectedVillage]);
+
   const unreadNews = useMemo(() => {
-    return [...newsData]
+    return [...filteredNews]
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
       .slice(0, 3);
-  }, []);
-  const openComplaints = useMemo(() => complaintsData.filter(c => c.status === 'pending'), []);
+  }, [filteredNews]);
+
+  const openComplaints = useMemo(() => filteredComplaints.filter(c => c.status === 'pending'), [filteredComplaints]);
 
   const statCards = [
-    { label: 'खबरें', count: newsData.length, page: 'news' as Page },
-    { label: 'शिकायतें', count: complaintsData.length, page: 'complaints' as Page },
+    { label: 'खबरें', count: filteredNews.length, page: 'news' as Page },
+    { label: 'शिकायतें', count: filteredComplaints.length, page: 'complaints' as Page },
     { label: 'योजनाएं', count: 6, page: 'schemes' as Page },
-    { label: 'सदस्य', count: 4, page: 'members' as Page },
+    { label: 'सदस्य', count: membersData.filter(m => selectedVillage === 'All' || m.village === selectedVillage || m.village === 'Constituency').length, page: 'members' as Page },
   ];
 
   const categories = [
@@ -45,9 +59,25 @@ export const HomePage = React.memo(function HomePage({ onNavigate }: HomePagePro
           textAlign: 'center',
         }}
       >
-        <h2 style={{ margin: '0 0 8px 0', fontSize: '28px' }}>ग्राम पंचायत</h2>
-        <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>आपका गाँव, आपका मंच</p>
+        <h2 style={{ margin: '0 0 8px 0', fontSize: '28px' }}>पिण्डरा विधानसभा</h2>
+        <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>
+          {selectedVillage === 'All' ? 'संपूर्ण विधानसभा की प्रगति' : `${selectedVillage} ग्राम की प्रगति`}
+        </p>
       </div>
+
+      {/* Constituency Level Info */}
+      {selectedVillage === 'All' && (
+        <div style={{ padding: '16px', backgroundColor: colors.primary.light, margin: '16px', borderRadius: '12px', border: `1px solid ${colors.primary.main}` }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ fontSize: '40px' }}>🏛️</div>
+            <div>
+              <div style={{ fontSize: '14px', color: colors.primary.dark, fontWeight: '600' }}>विधायक संपर्क</div>
+              <div style={{ fontSize: '18px', fontWeight: 'bold' }}>डॉ. अवधेश सिंह</div>
+              <div style={{ fontSize: '12px', color: colors.text.secondary }}>पिण्डरा विधानसभा, वाराणसी</div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div style={{ padding: '16px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>

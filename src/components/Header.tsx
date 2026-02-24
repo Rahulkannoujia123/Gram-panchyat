@@ -1,5 +1,6 @@
 import React from 'react';
 import { colors } from '../utils/colors';
+import { Village } from '../types';
 
 interface HeaderProps {
   title: string;
@@ -9,7 +10,11 @@ interface HeaderProps {
   onProfileClick?: () => void;
   rightAction?: React.ReactNode;
   notificationCount?: number;
+  selectedVillage?: Village | 'All';
+  onVillageChange?: (village: Village | 'All') => void;
 }
+
+const VILLAGES: (Village | 'All')[] = ['All', 'Babiracha', 'Rampur', 'Hibranpur', 'Bharawar'];
 
 export const Header = React.memo(function Header({
   title,
@@ -19,22 +24,25 @@ export const Header = React.memo(function Header({
   onProfileClick,
   rightAction,
   notificationCount = 0,
+  selectedVillage,
+  onVillageChange,
 }: HeaderProps) {
   return (
     <header
       style={{
-        padding: '16px',
+        padding: '12px 16px',
         backgroundColor: colors.primary.main,
         color: colors.neutral.white,
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        gap: '8px',
         boxShadow: `0 2px 4px ${colors.shadow}`,
         position: 'sticky',
         top: 0,
         zIndex: 200,
       }}
     >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
         {showBack && (
           <button
@@ -52,10 +60,10 @@ export const Header = React.memo(function Header({
             ←
           </button>
         )}
-        <h1 style={{ margin: 0, fontSize: '20px', fontWeight: '600' }}>{title}</h1>
+        <h1 style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>{title}</h1>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <div
           style={{
             position: 'relative',
@@ -121,6 +129,33 @@ export const Header = React.memo(function Header({
 
         {rightAction && rightAction}
       </div>
+      </div>
+
+      {onVillageChange && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(255,255,255,0.15)', padding: '4px 8px', borderRadius: '6px' }}>
+          <span style={{ fontSize: '12px', fontWeight: '500' }}>ग्राम:</span>
+          <select
+            value={selectedVillage}
+            onChange={(e) => onVillageChange(e.target.value as Village | 'All')}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: colors.neutral.white,
+              fontSize: '13px',
+              fontWeight: '600',
+              outline: 'none',
+              cursor: 'pointer',
+              flex: 1,
+            }}
+          >
+            {VILLAGES.map((v) => (
+              <option key={v} value={v} style={{ color: colors.text.primary }}>
+                {v === 'All' ? 'सभी गांव' : v}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
     </header>
   );
 });

@@ -1,5 +1,5 @@
-export const APP_NAME = "ग्राम पंचायत";
-export const APP_SUBTITLE = "आपका गाँव, आपका मंच";
+export const APP_NAME = "पिण्डरा विधानसभा";
+export const APP_SUBTITLE = "आपका विधानसभा, आपकी प्रगति";
 
 export const ANIMATION_DURATION = {
   fast: 150,

@@ -21,9 +21,10 @@ export interface NewsItem {
   likes: number;
   liked?: boolean;
   icon?: string;
+  village: Village;
 }
 
-export type Zone = 'Babiracha' | 'Rampur' | 'Hibranpur' | 'Bharawar';
+export type Village = 'Babiracha' | 'Rampur' | 'Hibranpur' | 'Bharawar';
 
 export interface Complaint {
   id: number;
@@ -32,7 +33,7 @@ export interface Complaint {
   date: string;
   time: string;
   userName: string;
-  zone: Zone;
+  village: Village;
   status: 'pending' | 'in-progress' | 'resolved';
   category: string;
   votes: number;
@@ -55,6 +56,7 @@ export interface Member {
   name: string;
   role: string;
   ward: string;
+  village: Village | 'Constituency';
   phone: string;
   image?: string;
   avatar?: string;
@@ -75,6 +77,7 @@ export interface Poll {
   options: PollOption[];
   date: string;
   status: 'active' | 'closed';
+  village: Village | 'All';
 }
 
 export interface PollOption {
@@ -91,6 +94,7 @@ export interface Notice {
   date: string;
   priority: 'high' | 'medium' | 'low' | 'normal';
   author?: string;
+  village: Village | 'All';
 }
 
 export interface Notification {

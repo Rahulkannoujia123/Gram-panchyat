@@ -1,18 +1,30 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { complaintsData } from '../data';
 import { colors } from '../utils/colors';
-import { Complaint } from '../types';
+import { Complaint, Village } from '../types';
 
 const complaintCategories = ['सड़क', 'बिजली', 'सफाई', 'पानी', 'अन्य'];
 
-const zones = ['Babiracha', 'Rampur', 'Hibranpur', 'Bharawar'];
+const villages: Village[] = ['Babiracha', 'Rampur', 'Hibranpur', 'Bharawar'];
 
-export const ComplaintsPage = React.memo(function ComplaintsPage() {
+interface ComplaintsPageProps {
+  selectedVillage: Village | 'All';
+}
+
+export const ComplaintsPage = React.memo(function ComplaintsPage({ selectedVillage }: ComplaintsPageProps) {
   const [filter, setFilter] = useState('all');
   const [newComplaint, setNewComplaint] = useState('');
   const [userName, setUserName] = useState('');
-  const [selectedZone, setSelectedZone] = useState('Babiracha');
+  const [selectedSubmissionVillage, setSelectedSubmissionVillage] = useState<Village>(
+    selectedVillage === 'All' ? 'Babiracha' : selectedVillage
+  );
   const [selectedCategory, setSelectedCategory] = useState('सड़क');
+
+  useEffect(() => {
+    if (selectedVillage !== 'All') {
+      setSelectedSubmissionVillage(selectedVillage);
+    }
+  }, [selectedVillage]);
   const [localComplaints, setLocalComplaints] = useState(complaintsData);
 
   const statusColors: Record<string, { bg: string; text: string }> = {
@@ -22,10 +34,14 @@ export const ComplaintsPage = React.memo(function ComplaintsPage() {
   };
 
   const filtered = useMemo(() => {
-    return filter === 'all'
+    const villageFiltered = selectedVillage === 'All'
       ? localComplaints
-      : localComplaints.filter((c) => c.status === filter);
-  }, [filter, localComplaints]);
+      : localComplaints.filter(c => c.village === selectedVillage);
+
+    return filter === 'all'
+      ? villageFiltered
+      : villageFiltered.filter((c) => c.status === filter);
+  }, [filter, localComplaints, selectedVillage]);
 
   const handleSubmit = useCallback(() => {
     if (newComplaint.trim() && userName.trim()) {
@@ -36,7 +52,7 @@ export const ComplaintsPage = React.memo(function ComplaintsPage() {
         date: new Date().toLocaleDateString('hi-IN'),
         time: new Date().toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' }),
         userName: userName,
-        zone: selectedZone,
+        village: selectedSubmissionVillage,
         status: 'pending' as const,
         category: selectedCategory,
         votes: 0,
@@ -45,7 +61,7 @@ export const ComplaintsPage = React.memo(function ComplaintsPage() {
       setNewComplaint('');
       setUserName('');
     }
-  }, [newComplaint, userName, selectedZone, selectedCategory, localComplaints]);
+  }, [newComplaint, userName, selectedSubmissionVillage, selectedCategory, localComplaints]);
 
   const handleVote = useCallback(
     (id: number) => {
@@ -92,11 +108,11 @@ export const ComplaintsPage = React.memo(function ComplaintsPage() {
         />
 
         <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '14px' }}>
-          क्षेत्र चुनें:
+          ग्राम चुनें:
         </label>
         <select
-          value={selectedZone}
-          onChange={(e) => setSelectedZone(e.target.value)}
+          value={selectedSubmissionVillage}
+          onChange={(e) => setSelectedSubmissionVillage(e.target.value as Village)}
           style={{
             width: '100%',
             padding: '8px',
@@ -106,8 +122,8 @@ export const ComplaintsPage = React.memo(function ComplaintsPage() {
             boxSizing: 'border-box',
           }}
         >
-          {zones.map((z) => (
-            <option key={z} value={z}>{z}</option>
+          {villages.map((v) => (
+            <option key={v} value={v}>{v}</option>
           ))}
         </select>
 
@@ -229,7 +245,7 @@ export const ComplaintsPage = React.memo(function ComplaintsPage() {
                     {complaint.title}
                   </h3>
                   <div style={{ fontSize: '12px', color: colors.text.secondary }}>
-                    {complaint.userName} • {complaint.zone} • {complaint.category} • {complaint.date} {complaint.time}
+                    {complaint.userName} • {complaint.village} • {complaint.category} • {complaint.date} {complaint.time}
                   </div>
                 </div>
                 <div

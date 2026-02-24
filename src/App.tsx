@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { Page } from './types';
+import { Page, Village } from './types';
 import { Header } from './components/Header';
 import { BottomNav } from './components/BottomNav';
 import {
@@ -20,6 +20,7 @@ import './styles/animations.css';
 
 export function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
+  const [selectedVillage, setSelectedVillage] = useState<Village | 'All'>('All');
   const [_theme, setTheme] = useState<'light' | 'dark'>('light');
   
   // Initialize notifications
@@ -49,7 +50,7 @@ export function App() {
 
   const pageConfig = useMemo(
     () => ({
-      home: { title: 'ग्राम पंचायत', showBack: false },
+      home: { title: 'पिण्डरा विधानसभा', showBack: false },
       news: { title: 'खबरें', showBack: true },
       complaints: { title: 'शिकायतें', showBack: true },
       schemes: { title: 'योजनाएं', showBack: true },
@@ -66,25 +67,25 @@ export function App() {
   const config = pageConfig[currentPage];
 
   const renderPage = useCallback(() => {
-    const props = { onNavigate: setCurrentPage };
+    const props = { onNavigate: setCurrentPage, selectedVillage };
     
     switch (currentPage) {
       case 'home':
         return <HomePage {...props} />;
       case 'news':
-        return <NewsPage />;
+        return <NewsPage selectedVillage={selectedVillage} />;
       case 'complaints':
-        return <ComplaintsPage />;
+        return <ComplaintsPage selectedVillage={selectedVillage} />;
       case 'schemes':
         return <SchemesPage />;
       case 'members':
-        return <MembersPage />;
+        return <MembersPage selectedVillage={selectedVillage} />;
       case 'emergency':
         return <EmergencyPage />;
       case 'polls':
-        return <PollsPage />;
+        return <PollsPage selectedVillage={selectedVillage} />;
       case 'notices':
-        return <NoticesPage />;
+        return <NoticesPage selectedVillage={selectedVillage} />;
       case 'notifications':
         return <NotificationsPage />;
       case 'profile':
@@ -92,7 +93,7 @@ export function App() {
       default:
         return <HomePage {...props} />;
     }
-  }, [currentPage, handleThemeChange]);
+  }, [currentPage, handleThemeChange, selectedVillage]);
 
   return (
     <div
@@ -112,6 +113,8 @@ export function App() {
         onNotificationsClick={() => setCurrentPage('notifications')}
         onProfileClick={() => setCurrentPage('profile')}
         notificationCount={unreadCount}
+        selectedVillage={selectedVillage}
+        onVillageChange={setSelectedVillage}
       />
 
       <main style={{ flex: 1, overflow: 'auto', paddingBottom: '80px' }}>
