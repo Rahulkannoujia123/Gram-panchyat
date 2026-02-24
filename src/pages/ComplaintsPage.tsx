@@ -5,7 +5,7 @@ import { Complaint, Village } from '../types';
 
 const complaintCategories = ['सड़क', 'बिजली', 'सफाई', 'पानी', 'अन्य'];
 
-const villages: Village[] = ['Babiracha', 'Rampur', 'Hibranpur', 'Bharawar'];
+const villages: Village[] = ['पिण्डरा', 'फूलपुर', 'सिंधौरा', 'बाबतपुर', 'खालिसपुर'];
 
 interface ComplaintsPageProps {
   selectedVillage: Village | 'All';
@@ -16,7 +16,7 @@ export const ComplaintsPage = React.memo(function ComplaintsPage({ selectedVilla
   const [newComplaint, setNewComplaint] = useState('');
   const [userName, setUserName] = useState('');
   const [selectedSubmissionVillage, setSelectedSubmissionVillage] = useState<Village>(
-    selectedVillage === 'All' ? 'Babiracha' : selectedVillage
+    selectedVillage === 'All' ? 'पिण्डरा' : selectedVillage
   );
   const [selectedCategory, setSelectedCategory] = useState('सड़क');
 

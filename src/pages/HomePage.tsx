@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Page, Village } from '../types';
 import { colors } from '../utils/colors';
-import { newsData, complaintsData, membersData } from '../data';
+import { newsData, complaintsData, membersData, villageStatsData } from '../data';
 
 interface HomePageProps {
   onNavigate: (page: Page) => void;
@@ -41,7 +41,6 @@ export const HomePage = React.memo(function HomePage({ onNavigate, selectedVilla
     { icon: '📝', label: 'शिकायतें', page: 'complaints' as Page },
     { icon: '💼', label: 'योजनाएं', page: 'schemes' as Page },
     { icon: '👥', label: 'सदस्य', page: 'members' as Page },
-    { icon: '🏘️', label: 'गाँव', page: 'villages' as Page },
     { icon: '⚠️', label: 'आपातकाल', page: 'emergency' as Page },
     { icon: '🗳️', label: 'मतदान', page: 'polls' as Page },
     { icon: '📢', label: 'नोटिस', page: 'notices' as Page },
@@ -67,7 +66,7 @@ export const HomePage = React.memo(function HomePage({ onNavigate, selectedVilla
       </div>
 
       {/* Constituency Level Info */}
-      {selectedVillage === 'All' && (
+      {selectedVillage === 'All' ? (
         <div style={{ padding: '16px', backgroundColor: colors.primary.light, margin: '16px', borderRadius: '12px', border: `1px solid ${colors.primary.main}` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ fontSize: '40px' }}>🏛️</div>
@@ -75,6 +74,28 @@ export const HomePage = React.memo(function HomePage({ onNavigate, selectedVilla
               <div style={{ fontSize: '14px', color: colors.primary.dark, fontWeight: '600' }}>विधायक संपर्क</div>
               <div style={{ fontSize: '18px', fontWeight: 'bold' }}>डॉ. अवधेश सिंह</div>
               <div style={{ fontSize: '12px', color: colors.text.secondary }}>पिण्डरा विधानसभा, वाराणसी</div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* Village Level Info / Stats */
+        <div style={{ padding: '16px', backgroundColor: colors.neutral.white, margin: '16px', borderRadius: '12px', border: `1px solid ${colors.border}`, boxShadow: `0 2px 8px ${colors.shadow}` }}>
+          <div style={{ borderBottom: `1px solid ${colors.border}`, paddingBottom: '12px', marginBottom: '12px' }}>
+            <h3 style={{ margin: 0, fontSize: '16px', color: colors.primary.dark }}>गाँव की जानकारी (प्रक्षेपित 2026)</h3>
+            <p style={{ margin: 0, fontSize: '10px', color: colors.text.secondary }}>स्रोत: उत्तर प्रदेश सरकारी डेटा पोर्टल (प्रक्षेपित)</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div>
+              <div style={{ fontSize: '12px', color: colors.text.secondary }}>कुल जनसंख्या</div>
+              <div style={{ fontSize: '20px', fontWeight: 'bold', color: colors.text.primary }}>
+                {villageStatsData[selectedVillage]?.population2026.toLocaleString('hi-IN')}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '12px', color: colors.text.secondary }}>कुल वार्ड</div>
+              <div style={{ fontSize: '20px', fontWeight: 'bold', color: colors.text.primary }}>
+                {villageStatsData[selectedVillage]?.wardsCount}
+              </div>
             </div>
           </div>
         </div>

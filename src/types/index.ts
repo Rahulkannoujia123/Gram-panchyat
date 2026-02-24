@@ -8,9 +8,7 @@ export type Page =
   | 'polls' 
   | 'notices'
   | 'notifications'
-  | 'profile'
-  | 'villages'
-  | 'village-detail';
+  | 'profile';
 
 export interface NewsItem {
   id: number;
@@ -26,7 +24,12 @@ export interface NewsItem {
   village: Village;
 }
 
-export type Village = 'Babiracha' | 'Rampur' | 'Hibranpur' | 'Bharawar';
+export type Village = 'पिण्डरा' | 'फूलपुर' | 'सिंधौरा' | 'बाबतपुर' | 'खालिसपुर';
+
+export interface VillageStats {
+  population2026: number;
+  wardsCount: number;
+}
 
 export interface Complaint {
   id: number;
@@ -127,19 +130,3 @@ export interface UserProfile {
     };
   };
 }
-
-export interface Village {
-  id: number;
-  name: string;
-  population: number;
-  wards: number;
-  sarpanch?: string;
-  phone?: string;
-  icon?: string;
-  description?: string;
-}
-
-export type VillageNews = NewsItem & { villageId: number };
-export type VillageComplaint = Complaint & { villageId: number };
-export type VillageScheme = Scheme & { villageId: number };
-export type VillageNotice = Notice & { villageId: number };

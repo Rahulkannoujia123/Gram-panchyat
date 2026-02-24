@@ -13,8 +13,6 @@ import {
   NoticesPage,
   NotificationsPage,
   ProfilePage,
-  VillagesPage,
-  VillageDetailPage,
 } from './pages';
 import { useNotifications } from './hooks/useNotifications';
 import { colors } from './utils/colors';
@@ -24,7 +22,6 @@ export function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [selectedVillage, setSelectedVillage] = useState<Village | 'All'>('All');
   const [_theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [selectedVillageId, setSelectedVillageId] = useState<number | undefined>();
   
   // Initialize notifications
   const { unreadCount } = useNotifications([
@@ -63,8 +60,6 @@ export function App() {
       notices: { title: 'नोटिस', showBack: true },
       notifications: { title: 'सूचनाएं', showBack: true },
       profile: { title: 'प्रोफाइल', showBack: true },
-      villages: { title: 'गाँव', showBack: true },
-      'village-detail': { title: 'गाँव विवरण', showBack: true },
     }),
     []
   );
@@ -95,19 +90,10 @@ export function App() {
         return <NotificationsPage />;
       case 'profile':
         return <ProfilePage onThemeChange={handleThemeChange} />;
-      case 'villages':
-        return <VillagesPage onNavigate={(page: Page, villageId?: number) => {
-          if (villageId) setSelectedVillageId(villageId);
-          setCurrentPage(page);
-        }} />;
-      case 'village-detail':
-        return <VillageDetailPage villageId={selectedVillageId} onNavigate={(section) => {
-          console.log('Section:', section);
-          // This can be extended for section-specific filtering
-        }} />;
       default:
         return <HomePage {...props} />;
     }
+  }, [currentPage, handleThemeChange, selectedVillage]);
   }, [currentPage, handleThemeChange, selectedVillage, selectedVillageId]);
 
   return (
