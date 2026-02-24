@@ -27,6 +27,7 @@ export const HomePage = React.memo(function HomePage({ onNavigate }: HomePagePro
     { icon: '📝', label: 'शिकायतें', page: 'complaints' as Page },
     { icon: '💼', label: 'योजनाएं', page: 'schemes' as Page },
     { icon: '👥', label: 'सदस्य', page: 'members' as Page },
+    { icon: '🏘️', label: 'गाँव', page: 'villages' as Page },
     { icon: '⚠️', label: 'आपातकाल', page: 'emergency' as Page },
     { icon: '🗳️', label: 'मतदान', page: 'polls' as Page },
     { icon: '📢', label: 'नोटिस', page: 'notices' as Page },
