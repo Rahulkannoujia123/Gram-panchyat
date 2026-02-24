@@ -2,6 +2,10 @@ import React, { useState, useMemo } from 'react';
 import { Page } from '../types';
 import { colors } from '../utils/colors';
 import { useVillages } from '../hooks/useVillages';
+import { usePradhanData } from '../hooks/usePradhanData';
+import { usePopulationData } from '../hooks/usePopulationData';
+import { VillageSelector } from '../components/VillageSelector';
+import { PradhanCard } from '../components/PradhanCard';
 
 interface VillagesPageProps {
   onNavigate: (page: Page, villageId?: number) => void;
@@ -9,7 +13,10 @@ interface VillagesPageProps {
 
 export const VillagesPage = React.memo(function VillagesPage({ onNavigate }: VillagesPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedVillageId, setSelectedVillageId] = useState<number | undefined>();
   const { villages: villagesData, loading, error } = useVillages();
+  const { pradhan, loading: pradhanLoading } = usePradhanData(selectedVillageId, villagesData.find(v => v.id === selectedVillageId)?.name);
+  const { population, loading: popLoading } = usePopulationData(selectedVillageId, villagesData.find(v => v.id === selectedVillageId)?.name);
 
   const filteredVillages = useMemo(() => {
     return villagesData.filter(village =>
@@ -60,9 +67,35 @@ export const VillagesPage = React.memo(function VillagesPage({ onNavigate }: Vil
         </div>
       )}
 
+      {/* Village Selector */}
+      {!loading && (
+        <div style={{ padding: '16px' }}>
+          <div style={{ marginBottom: '12px' }}>
+            <label style={{ fontSize: '14px', fontWeight: '600', color: colors.text.primary, display: 'block', marginBottom: '8px' }}>
+              गाँव का चयन करें (विस्तृत जानकारी के लिए)
+            </label>
+            <VillageSelector
+              villages={villagesData}
+              selectedVillageId={selectedVillageId}
+              onSelect={(villageId) => setSelectedVillageId(villageId)}
+              placeholder="गाँव चुनें..."
+            />
+          </div>
+
+          {/* Pradhan Card */}
+          {selectedVillageId && (
+            <PradhanCard
+              pradhan={pradhan}
+              population={population}
+              loading={pradhanLoading || popLoading}
+            />
+          )}
+        </div>
+      )}
+
       {/* Search Bar */}
       {!loading && (
-        <div style={{ padding: '16px', backgroundColor: colors.neutral.light }}>
+        <div style={{ padding: '16px', paddingTop: '0' }}>
           <input
             type="text"
             placeholder="गाँव खोजें..."

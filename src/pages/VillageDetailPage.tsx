@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react';
 import { colors } from '../utils/colors';
 import { villagesData, villageNewsData, villageComplaintsData, villageNoticesData } from '../data';
+import { usePradhanData } from '../hooks/usePradhanData';
+import { usePopulationData } from '../hooks/usePopulationData';
+import { PradhanCard } from '../components/PradhanCard';
 
 interface VillageDetailPageProps {
   villageId: number | undefined;
@@ -14,6 +17,9 @@ export const VillageDetailPage = React.memo(function VillageDetailPage({
   const village = useMemo(() => {
     return villagesData.find(v => v.id === villageId);
   }, [villageId]);
+
+  const { pradhan, loading: pradhanLoading } = usePradhanData(villageId, village?.name);
+  const { population, loading: popLoading } = usePopulationData(villageId, village?.name);
 
   const villageNews = useMemo(() => {
     return villageNewsData.filter(n => n.villageId === villageId);
@@ -87,14 +93,22 @@ export const VillageDetailPage = React.memo(function VillageDetailPage({
         </div>
       </div>
 
-      {/* Sarpanch Info */}
+      {/* Sarpanch & Population Info */}
       <div style={{ padding: '16px' }}>
+        <PradhanCard
+          pradhan={pradhan}
+          population={population}
+          loading={pradhanLoading || popLoading}
+        />
+
+        {/* Old fallback section - keep for legacy support */}
         <div
           style={{
             padding: '16px',
             backgroundColor: colors.neutral.white,
             border: `1px solid ${colors.border}`,
             borderRadius: '12px',
+            display: pradhan ? 'none' : 'block',
           }}
         >
           <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>
