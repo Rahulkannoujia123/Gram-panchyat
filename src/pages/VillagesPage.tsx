@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Page } from '../types';
 import { colors } from '../utils/colors';
-import { villagesData } from '../data';
+import { useVillages } from '../hooks/useVillages';
 
 interface VillagesPageProps {
   onNavigate: (page: Page, villageId?: number) => void;
@@ -9,6 +9,7 @@ interface VillagesPageProps {
 
 export const VillagesPage = React.memo(function VillagesPage({ onNavigate }: VillagesPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const { villages: villagesData, loading, error } = useVillages();
 
   const filteredVillages = useMemo(() => {
     return villagesData.filter(village =>
@@ -32,27 +33,57 @@ export const VillagesPage = React.memo(function VillagesPage({ onNavigate }: Vil
         <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>कुल {villagesData.length} गाँव</p>
       </div>
 
+      {/* Error Message */}
+      {error && (
+        <div style={{
+          padding: '16px',
+          margin: '16px',
+          backgroundColor: '#fff3cd',
+          border: '1px solid #ffc107',
+          borderRadius: '8px',
+          color: '#856404',
+          fontSize: '14px',
+        }}>
+          {error}
+        </div>
+      )}
+
+      {/* Loading State */}
+      {loading && (
+        <div style={{
+          padding: '40px 16px',
+          textAlign: 'center',
+          color: colors.text.secondary,
+        }}>
+          <div style={{ fontSize: '24px', marginBottom: '12px' }}>⏳</div>
+          <p>गाँवों की जानकारी लोड हो रही है...</p>
+        </div>
+      )}
+
       {/* Search Bar */}
-      <div style={{ padding: '16px', backgroundColor: colors.neutral.light }}>
-        <input
-          type="text"
-          placeholder="गाँव खोजें..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '12px',
-            border: `1px solid ${colors.border}`,
-            borderRadius: '8px',
-            fontSize: '14px',
-            boxSizing: 'border-box',
-          }}
-        />
-      </div>
+      {!loading && (
+        <div style={{ padding: '16px', backgroundColor: colors.neutral.light }}>
+          <input
+            type="text"
+            placeholder="गाँव खोजें..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '12px',
+              border: `1px solid ${colors.border}`,
+              borderRadius: '8px',
+              fontSize: '14px',
+              boxSizing: 'border-box',
+            }}
+          />
+        </div>
+      )}
 
       {/* Villages Grid */}
-      <div style={{ padding: '16px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+      {!loading && (
+        <div style={{ padding: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           {filteredVillages.map((village) => (
             <button
               key={village.id}
@@ -89,22 +120,24 @@ export const VillagesPage = React.memo(function VillagesPage({ onNavigate }: Vil
           ))}
         </div>
 
-        {filteredVillages.length === 0 && (
-          <div
-            style={{
-              textAlign: 'center',
-              padding: '40px 16px',
-              color: colors.text.secondary,
-            }}
-          >
-            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔍</div>
-            <div>कोई गाँव नहीं मिला</div>
-          </div>
-        )}
-      </div>
+          {filteredVillages.length === 0 && (
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '40px 16px',
+                color: colors.text.secondary,
+              }}
+            >
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔍</div>
+              <div>कोई गाँव नहीं मिला</div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Village Statistics */}
-      <div style={{ padding: '16px', paddingTop: '0' }}>
+      {!loading && (
+        <div style={{ padding: '16px', paddingTop: '0' }}>
         <h3 style={{ marginTop: '16px', marginBottom: '12px', fontSize: '16px', fontWeight: '600' }}>
           सांख्यिकी
         </h3>
@@ -136,7 +169,8 @@ export const VillagesPage = React.memo(function VillagesPage({ onNavigate }: Vil
             <div style={{ fontSize: '12px', color: colors.text.secondary }}>कुल जनसंख्या</div>
           </div>
         </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 });
