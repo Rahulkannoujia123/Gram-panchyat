@@ -147,7 +147,7 @@ export const VillagesPage = React.memo(function VillagesPage({ onNavigate }: Vil
               <div style={{ fontSize: '12px', color: colors.text.secondary, marginBottom: '4px' }}>
                 👥 {village.population.toLocaleString('hi-IN')} लोग
               </div>
-              <div style={{ fontSize: '11px', color: colors.text.tertiary }}>
+              <div style={{ fontSize: '11px', color: colors.text.secondary }}>
                 🏛️ {village.wards} वार्ड
               </div>
             </button>

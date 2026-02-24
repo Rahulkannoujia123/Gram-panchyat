@@ -1,4 +1,4 @@
-import { Complaint, Village } from '../types';
+import { Complaint } from '../types';
 import { complaintsData } from '../data';
 
 const COMPLAINTS_STORAGE_KEY = 'pindra_complaints';

@@ -29,7 +29,7 @@ const census2011Data: Record<number, PopulationData> = {
 /**
  * Fetch population from World Bank Open Data API
  */
-async function fetchFromWorldBank(villageId: number, villageName: string): Promise<PopulationData | null> {
+async function fetchFromWorldBank(_villageId: number, _villageName: string): Promise<PopulationData | null> {
   try {
     console.log('[v0-PopService] Fetching from World Bank API...');
     
@@ -43,7 +43,7 @@ async function fetchFromWorldBank(villageId: number, villageName: string): Promi
     ]);
 
     if (response.ok) {
-      const data = await response.json();
+      await response.json();
       
       // This gives country-level data, not village-level
       // We'll use it as reference for population patterns

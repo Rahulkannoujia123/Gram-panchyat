@@ -298,7 +298,7 @@ export const ComplaintsPage = React.memo(function ComplaintsPage({ selectedVilla
           style={{
             width: '100%',
             padding: '12px',
-            backgroundColor: loading ? colors.text.tertiary : colors.primary.main,
+            backgroundColor: loading ? colors.text.secondary : colors.primary.main,
             color: colors.neutral.white,
             border: 'none',
             borderRadius: '8px',

@@ -134,7 +134,7 @@ export const Header = React.memo(function Header({
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(255,255,255,0.15)', padding: '4px 8px', borderRadius: '6px' }}>
           <span style={{ fontSize: '12px', fontWeight: '500' }}>ग्राम:</span>
           <select
-            value={selectedVillage === 'All' ? 'All' : selectedVillage.id}
+            value={selectedVillage === 'All' ? 'All' : (selectedVillage?.id || 'All')}
             onChange={(e) => {
               const val = e.target.value;
               if (val === 'All') {

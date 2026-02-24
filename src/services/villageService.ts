@@ -116,7 +116,7 @@ export async function fetchVillagesFromWikipedia(): Promise<Village[] | null> {
 
     if (!response.ok) throw new Error('Wikipedia API failed');
 
-    const data = await response.json();
+    await response.json();
     // Wikipedia API would provide general info, not structured village list
     // This is a fallback only
     console.log('Wikipedia data available but not structured for villages');

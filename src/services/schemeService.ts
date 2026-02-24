@@ -18,7 +18,7 @@ export const schemeService = {
     return filtered;
   },
 
-  getExternalSchemeDetails: (schemeId: number) => {
+  getExternalSchemeDetails: (_schemeId: number) => {
     // In a real world, this would link to something like:
     // https://www.myscheme.gov.in/schemes/<scheme-slug>
     return `https://www.myscheme.gov.in/`;

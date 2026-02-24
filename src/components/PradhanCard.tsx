@@ -75,7 +75,7 @@ export const PradhanCard = React.memo(function PradhanCard({
                 href={`tel:${pradhan.phone}`}
                 style={{
                   fontSize: '14px',
-                  color: colors.primary,
+                  color: colors.primary.main,
                   textDecoration: 'none',
                   fontWeight: '500',
                 }}
@@ -91,7 +91,7 @@ export const PradhanCard = React.memo(function PradhanCard({
                 href={`mailto:${pradhan.email}`}
                 style={{
                   fontSize: '14px',
-                  color: colors.primary,
+                  color: colors.primary.main,
                   textDecoration: 'none',
                   fontWeight: '500',
                 }}
@@ -125,7 +125,7 @@ export const PradhanCard = React.memo(function PradhanCard({
               }}
             >
               <div style={{ fontSize: '12px', color: colors.text.secondary }}>कुल</div>
-              <div style={{ fontSize: '16px', fontWeight: '600', color: colors.primary }}>
+              <div style={{ fontSize: '16px', fontWeight: '600', color: colors.primary.main }}>
                 {population.population.toLocaleString('hi-IN')}
               </div>
             </div>

@@ -266,7 +266,7 @@ export const VillageDetailPage = React.memo(function VillageDetailPage({
           villageComplaints.map((complaint) => {
             const statusColor =
               complaint.status === 'resolved'
-                ? colors.success
+                ? colors.status.success
                 : complaint.status === 'in-progress'
                 ? colors.primary.main
                 : colors.accent.main;
@@ -348,7 +348,7 @@ export const VillageDetailPage = React.memo(function VillageDetailPage({
                 <div style={{ fontSize: '13px', color: colors.text.secondary, marginBottom: '4px', lineHeight: '1.4' }}>
                   {notice.content}
                 </div>
-                <div style={{ fontSize: '11px', color: colors.text.tertiary }}>
+                <div style={{ fontSize: '11px', color: colors.text.secondary }}>
                   {notice.date} • {notice.author}
                 </div>
               </div>
