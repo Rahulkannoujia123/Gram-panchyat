@@ -108,8 +108,7 @@ export function App() {
       default:
         return <HomePage {...props} />;
     }
-  }, [currentPage, handleThemeChange, selectedVillage]);
-  }, [currentPage, handleThemeChange, selectedVillageId]);
+  }, [currentPage, handleThemeChange, selectedVillage, selectedVillageId]);
 
   return (
     <div
