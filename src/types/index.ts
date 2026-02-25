@@ -43,6 +43,7 @@ export interface Complaint {
   category: string;
   votes: number;
   upvoted?: boolean;
+  image?: string;
 }
 
 export interface Scheme {

@@ -136,9 +136,35 @@ export const HomePage = React.memo(function HomePage({ onNavigate, selectedVilla
         ))}
       </div>
 
+      {/* Featured Content */}
+      <div style={{ padding: '0 16px 16px 16px' }}>
+        <div
+          onClick={() => onNavigate('schemes')}
+          style={{
+            backgroundColor: '#FFF9C4',
+            border: '1px solid #FBC02D',
+            borderRadius: '12px',
+            padding: '16px',
+            display: 'flex',
+            gap: '16px',
+            alignItems: 'center',
+            cursor: 'pointer'
+          }}
+        >
+          <div style={{ fontSize: '32px' }}>🌟</div>
+          <div>
+            <div style={{ fontSize: '12px', color: '#F57F17', fontWeight: 'bold' }}>विशेष योजना</div>
+            <div style={{ fontSize: '16px', fontWeight: 'bold' }}>मुख्यमंत्री आवास योजना</div>
+            <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: colors.text.secondary }}>
+              अपने पक्के मकान का सपना सच करें। आवेदन शुरू!
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Quick Access */}
       <div style={{ padding: '16px', paddingTop: '0' }}>
-        <h3 style={{ marginTop: '16px', marginBottom: '12px', fontSize: '16px', fontWeight: '600' }}>
+        <h3 style={{ marginTop: '0', marginBottom: '12px', fontSize: '16px', fontWeight: '600' }}>
           जल्दी पहुंचें
         </h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
