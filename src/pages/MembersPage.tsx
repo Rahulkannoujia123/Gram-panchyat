@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import { membersData } from '../data';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { colors } from '../utils/colors';
-import { Village } from '../types';
+import { Village, Member } from '../types';
+import { memberService } from '../services/memberService';
 
 interface MembersPageProps {
   selectedVillage: Village | 'All';
@@ -9,16 +9,26 @@ interface MembersPageProps {
 
 export const MembersPage = React.memo(function MembersPage({ selectedVillage }: MembersPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [members, setMembers] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const loadMembers = useCallback(async () => {
+    setLoading(true);
+    const data = await memberService.getMembersByVillage(selectedVillage);
+    setMembers(data);
+    setLoading(false);
+  }, [selectedVillage]);
+
+  useEffect(() => {
+    loadMembers();
+  }, [loadMembers]);
 
   const filtered = useMemo(() => {
-    return membersData.filter((member) => {
+    return members.filter((member) => {
       const nameMatch = member.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const villageMatch = selectedVillage === 'All'
-        || member.village === 'Constituency'
-        || (typeof member.village !== 'string' && member.village.id === selectedVillage.id);
-      return nameMatch && villageMatch;
+      return nameMatch;
     });
-  }, [searchTerm, selectedVillage]);
+  }, [searchTerm, members]);
 
   return (
     <div style={{ paddingBottom: '80px' }} className="page-transition">
@@ -42,7 +52,11 @@ export const MembersPage = React.memo(function MembersPage({ selectedVillage }: 
 
       {/* Members List */}
       <div style={{ padding: '16px' }}>
-        {filtered.length > 0 ? (
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '32px' }}>
+            <div style={{ color: colors.primary.main }}>लोड हो रहा है...</div>
+          </div>
+        ) : filtered.length > 0 ? (
           filtered.map((member) => (
             <div
               key={member.id}
@@ -70,15 +84,16 @@ export const MembersPage = React.memo(function MembersPage({ selectedVillage }: 
                   width: '60px',
                   height: '60px',
                   borderRadius: '50%',
-                  backgroundColor: colors.primary.light,
+                  backgroundColor: member.role.includes('प्रधान') ? colors.accent.light : colors.primary.light,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '32px',
                   flexShrink: 0,
+                  border: member.role.includes('प्रधान') ? `2px solid ${colors.accent.main}` : 'none'
                 }}
               >
-                👤
+                {member.avatar || '👤'}
               </div>
               <div style={{ flex: 1 }}>
                 <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600' }}>

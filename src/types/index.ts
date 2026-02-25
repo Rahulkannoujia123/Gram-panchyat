@@ -35,6 +35,7 @@ export interface Complaint {
   time: string;
   userName: string;
   village: Village;
+  image?: string;
   status: 'pending' | 'in-progress' | 'resolved';
   category: string;
   votes: number;

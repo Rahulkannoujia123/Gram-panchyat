@@ -18,6 +18,7 @@ export const ComplaintsPage = React.memo(function ComplaintsPage({ selectedVilla
     selectedVillage === 'All' ? pindraVillages[0] : selectedVillage
   );
   const [selectedCategory, setSelectedCategory] = useState('सड़क');
+  const [selectedImage, setSelectedImage] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const [trackingId, setTrackingId] = useState('');
   const [trackedComplaint, setTrackedComplaint] = useState<Complaint | null>(null);
@@ -57,6 +58,17 @@ export const ComplaintsPage = React.memo(function ComplaintsPage({ selectedVilla
       : villageFiltered.filter((c) => c.status === filter);
   }, [filter, localComplaints, selectedVillage]);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async () => {
     if (newComplaint.trim() && userName.trim()) {
       setLoading(true);
@@ -66,11 +78,13 @@ export const ComplaintsPage = React.memo(function ComplaintsPage({ selectedVilla
         userName,
         village: selectedSubmissionVillage as any,
         category: selectedCategory,
+        image: selectedImage,
       });
 
       alert(`आपकी शिकायत दर्ज कर ली गई है। आपका ट्रैकिंग आईडी है: ${result.trackingId}`);
       setNewComplaint('');
       setUserName('');
+      setSelectedImage(undefined);
       loadComplaints();
     }
   };
@@ -292,6 +306,60 @@ export const ComplaintsPage = React.memo(function ComplaintsPage({ selectedVilla
           }}
         />
 
+        <div style={{ marginBottom: '16px' }}>
+          <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '14px' }}>
+            फोटो जोड़ें (वैकल्पिक):
+          </label>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <label style={{
+              flex: 1,
+              padding: '12px',
+              backgroundColor: colors.neutral.white,
+              border: `2px dashed ${colors.border}`,
+              borderRadius: '8px',
+              textAlign: 'center',
+              cursor: 'pointer',
+              fontSize: '14px'
+            }}>
+              {selectedImage ? '✅ फोटो चुन ली गई' : '📷 फोटो खींचें या चुनें'}
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handleImageChange}
+                style={{ display: 'none' }}
+              />
+            </label>
+            {selectedImage && (
+              <div style={{ position: 'relative' }}>
+                <img
+                  src={selectedImage}
+                  alt="Preview"
+                  style={{ width: '45px', height: '45px', borderRadius: '4px', objectFit: 'cover' }}
+                />
+                <button
+                  onClick={() => setSelectedImage(undefined)}
+                  style={{
+                    position: 'absolute',
+                    top: '-8px',
+                    right: '-8px',
+                    backgroundColor: colors.status.error,
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '18px',
+                    height: '18px',
+                    fontSize: '10px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
         <button
           onClick={handleSubmit}
           disabled={loading}
@@ -394,6 +462,15 @@ export const ComplaintsPage = React.memo(function ComplaintsPage({ selectedVilla
               <p style={{ margin: '8px 0', fontSize: '14px', color: colors.text.primary }}>
                 {complaint.description}
               </p>
+              {complaint.image && (
+                <div style={{ marginBottom: '12px' }}>
+                  <img
+                    src={complaint.image}
+                    alt="Complaint"
+                    style={{ width: '100%', maxHeight: '200px', borderRadius: '8px', objectFit: 'cover' }}
+                  />
+                </div>
+              )}
               <button
                 onClick={() => handleVote(complaint.id)}
                 style={{

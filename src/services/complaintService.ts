@@ -37,6 +37,7 @@ export const complaintService = {
       time: new Date().toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' }),
       userName: complaint.userName || 'Anonymous',
       village: complaint.village as any,
+      image: complaint.image,
       status: 'pending',
       category: complaint.category || 'अन्य',
       votes: 0,
