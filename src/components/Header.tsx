@@ -1,6 +1,7 @@
 import React from 'react';
 import { colors } from '../utils/colors';
 import { Village } from '../types';
+import { ALL_VILLAGES_HINDI } from '../data/pindraPanchayats';
 
 interface HeaderProps {
   title: string;
@@ -14,7 +15,7 @@ interface HeaderProps {
   onVillageChange?: (village: Village | 'All') => void;
 }
 
-const VILLAGES: (Village | 'All')[] = ['All', 'पिण्डरा', 'फूलपुर', 'सिंधौरा', 'बाबतपुर', 'खालिसपुर'];
+const VILLAGES: (Village | 'All')[] = ['All', ...ALL_VILLAGES_HINDI];
 
 export const Header = React.memo(function Header({
   title,

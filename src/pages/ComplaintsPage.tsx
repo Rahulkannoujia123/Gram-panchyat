@@ -2,10 +2,11 @@ import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { complaintsData } from '../data';
 import { colors } from '../utils/colors';
 import { Complaint, Village } from '../types';
+import { pindraPanchayats, ALL_VILLAGES_HINDI, villageMapping } from '../data/pindraPanchayats';
 
 const complaintCategories = ['सड़क', 'बिजली', 'सफाई', 'पानी', 'अन्य'];
 
-const villages: Village[] = ['पिण्डरा', 'फूलपुर', 'सिंधौरा', 'बाबतपुर', 'खालिसपुर'];
+const villages: Village[] = ALL_VILLAGES_HINDI;
 
 interface ComplaintsPageProps {
   selectedVillage: Village | 'All';
@@ -28,17 +29,20 @@ export const ComplaintsPage = React.memo(function ComplaintsPage({ selectedVilla
     if (selectedVillage !== 'All') {
       setSelectedSubmissionVillage(selectedVillage);
 
-      // Fetch Pradhan for the selected village
-      fetch(`https://randomuser.me/api/?nat=in&seed=${selectedVillage}`)
-        .then(res => res.json())
-        .then(data => {
-          const user = data.results[0];
-          setCurrentPradhan({
-            name: `${user.name.first} ${user.name.last}`,
-            phone: user.phone
-          });
-        })
-        .catch(err => console.error(err));
+      // Find Pradhan for the selected village from local data
+      const pradhan = pindraPanchayats.find(p =>
+        villageMapping[p.village] === selectedVillage || p.village === selectedVillage
+      );
+
+      if (pradhan) {
+        setCurrentPradhan({
+          name: pradhan.name,
+          phone: pradhan.phone
+        });
+      } else {
+        // Fallback or keep null
+        setCurrentPradhan(null);
+      }
     } else {
       setCurrentPradhan(null);
     }

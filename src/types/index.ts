@@ -24,7 +24,7 @@ export interface NewsItem {
   village: Village;
 }
 
-export type Village = 'पिण्डरा' | 'फूलपुर' | 'सिंधौरा' | 'बाबतपुर' | 'खालिसपुर';
+export type Village = string;
 
 export interface VillageStats {
   population2026: number;
