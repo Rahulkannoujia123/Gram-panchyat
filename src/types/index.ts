@@ -9,7 +9,8 @@ export type Page =
   | 'notices'
   | 'notifications'
   | 'profile'
-  | 'pradhans';
+  | 'pradhans'
+  | 'rampur';
 
 export interface NewsItem {
   id: number;

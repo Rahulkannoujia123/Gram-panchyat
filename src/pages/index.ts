@@ -9,3 +9,4 @@ export { NoticesPage } from './NoticesPage';
 export { NotificationsPage } from './NotificationsPage';
 export { ProfilePage } from './ProfilePage';
 export { PradhansPage } from './PradhansPage';
+export { RampurPradhanPage } from './RampurPradhanPage';

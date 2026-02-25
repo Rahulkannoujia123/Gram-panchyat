@@ -14,6 +14,7 @@ import {
   NotificationsPage,
   ProfilePage,
   PradhansPage,
+  RampurPradhanPage,
 } from './pages';
 import { useNotifications } from './hooks/useNotifications';
 import { colors } from './utils/colors';
@@ -62,6 +63,7 @@ export function App() {
       notifications: { title: 'सूचनाएं', showBack: true },
       profile: { title: 'प्रोफाइल', showBack: true },
       pradhans: { title: 'ग्राम प्रधान', showBack: true },
+      rampur: { title: 'रामपुर की महिला प्रधान', showBack: true },
     }),
     []
   );
@@ -94,6 +96,8 @@ export function App() {
         return <ProfilePage onThemeChange={handleThemeChange} />;
       case 'pradhans':
         return <PradhansPage />;
+      case 'rampur':
+        return <RampurPradhanPage />;
       default:
         return <HomePage {...props} />;
     }
