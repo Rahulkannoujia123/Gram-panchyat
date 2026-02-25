@@ -1,44 +1,26 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { membersData } from '../data';
 import { colors } from '../utils/colors';
 import { Village, Member } from '../types';
+import { pindraPanchayats, getHindiVillage } from '../data/pindraPanchayats';
 
 interface MembersPageProps {
   selectedVillage: Village | 'All';
 }
 
-const VILLAGES: Village[] = ['पिण्डरा', 'फूलपुर', 'सिंधौरा', 'बाबतपुर', 'खालिसपुर'];
-
 export const MembersPage = React.memo(function MembersPage({ selectedVillage }: MembersPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [pradhans, setPradhans] = useState<Member[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchPradhans = async () => {
-      try {
-        const response = await fetch(`https://randomuser.me/api/?results=${VILLAGES.length}&nat=in`);
-        const data = await response.json();
-
-        const fetchedPradhans: Member[] = data.results.map((user: any, index: number) => ({
-          id: 1000 + index,
-          name: `${user.name.first} ${user.name.last}`,
-          role: 'ग्राम प्रधान',
-          phone: user.phone,
-          ward: 'सम्पूर्ण गाँव',
-          village: VILLAGES[index],
-          avatar: user.picture.medium
-        }));
-
-        setPradhans(fetchedPradhans);
-      } catch (error) {
-        console.error('Error fetching Pradhans:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPradhans();
+  const pradhans: Member[] = useMemo(() => {
+    return pindraPanchayats.map(p => ({
+      id: p.id,
+      name: p.name,
+      role: 'ग्राम प्रधान',
+      phone: p.phone,
+      ward: 'सम्पूर्ण गाँव',
+      village: getHindiVillage(p.village),
+      avatar: '👨‍💼'
+    }));
   }, []);
 
   const filtered = useMemo(() => {
