@@ -138,10 +138,10 @@ export const Header = React.memo(function Header({
             onChange={(e) => {
               const val = e.target.value;
               if (val === 'All') {
-                onVillageChange('All');
+                onVillageChange?.('All');
               } else {
                 const village = pindraVillages.find(v => v.id === Number(val));
-                if (village) onVillageChange(village);
+                if (village) onVillageChange?.(village);
               }
             }}
             style={{
