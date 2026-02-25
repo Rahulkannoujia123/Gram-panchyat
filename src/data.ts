@@ -76,7 +76,8 @@ export const noticesData: Notice[] = [
 ];
 
 export const emergencyContacts: (Emergency & { color: string })[] = [
-  { id: 1, name: "पुलिस", number: "100", icon: "🚔", type: "आपातकालीन", color: "bg-blue-500" },
+  { id: 0, name: "CM हेल्पलाइन", number: "1076", icon: "📞", type: "आपातकालीन", color: "bg-orange-600" },
+  { id: 1, name: "पुलिस", number: "112", icon: "🚔", type: "आपातकालीन", color: "bg-blue-500" },
   { id: 2, name: "एम्बुलेंस", number: "108", icon: "🚑", type: "आपातकालीन", color: "bg-red-500" },
   { id: 3, name: "अग्निशमन", number: "101", icon: "🚒", type: "आपातकालीन", color: "bg-orange-500" },
   { id: 4, name: "महिला हेल्पलाइन", number: "1091", icon: "👩", type: "आपातकालीन", color: "bg-pink-500" },
