@@ -8,7 +8,8 @@ export type Page =
   | 'polls' 
   | 'notices'
   | 'notifications'
-  | 'profile';
+  | 'profile'
+  | 'pradhans';
 
 export interface NewsItem {
   id: number;

@@ -46,6 +46,7 @@ export const HomePage = React.memo(function HomePage({ onNavigate, selectedVilla
     { icon: '📢', label: 'नोटिस', page: 'notices' as Page },
     { icon: '🔔', label: 'सूचनाएं', page: 'notifications' as Page },
     { icon: '👤', label: 'प्रोफाइल', page: 'profile' as Page },
+    { icon: '👨‍💼', label: 'प्रधान', page: 'pradhans' as Page },
   ];
 
   return (

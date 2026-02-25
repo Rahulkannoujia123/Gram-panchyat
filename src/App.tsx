@@ -13,6 +13,7 @@ import {
   NoticesPage,
   NotificationsPage,
   ProfilePage,
+  PradhansPage,
 } from './pages';
 import { useNotifications } from './hooks/useNotifications';
 import { colors } from './utils/colors';
@@ -60,6 +61,7 @@ export function App() {
       notices: { title: 'नोटिस', showBack: true },
       notifications: { title: 'सूचनाएं', showBack: true },
       profile: { title: 'प्रोफाइल', showBack: true },
+      pradhans: { title: 'ग्राम प्रधान', showBack: true },
     }),
     []
   );
@@ -90,6 +92,8 @@ export function App() {
         return <NotificationsPage />;
       case 'profile':
         return <ProfilePage onThemeChange={handleThemeChange} />;
+      case 'pradhans':
+        return <PradhansPage />;
       default:
         return <HomePage {...props} />;
     }
