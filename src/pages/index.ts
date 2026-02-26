@@ -8,3 +8,4 @@ export { PollsPage } from './PollsPage';
 export { NoticesPage } from './NoticesPage';
 export { NotificationsPage } from './NotificationsPage';
 export { ProfilePage } from './ProfilePage';
+export { WorkersPage } from './WorkersPage';

@@ -8,7 +8,54 @@ export type Page =
   | 'polls' 
   | 'notices'
   | 'notifications'
-  | 'profile';
+  | 'profile'
+  | 'workers';
+
+export type ServiceType =
+  | 'Electrician'
+  | 'Plumber'
+  | 'Carpenter'
+  | 'Mason'
+  | 'Labor'
+  | 'FarmLabor'
+  | 'Painter'
+  | 'Mechanic'
+  | 'Welder'
+  | 'Other';
+
+export type ExperienceLevel = '1 year' | '2-5 years' | '5-10 years' | '10+ years';
+
+export type AvailabilityStatus = 'Available Now' | 'Busy' | 'Available tomorrow' | 'On holiday';
+
+export interface WorkerRate {
+  standard: number;
+  complex: number;
+  emergency: number;
+  materialsExtra: boolean;
+}
+
+export interface Worker {
+  id: number;
+  name: string;
+  phone: string;
+  whatsapp?: string;
+  location: {
+    village: Village;
+    address: string;
+  };
+  photo?: string;
+  serviceType: ServiceType;
+  experience: ExperienceLevel;
+  rateCard: WorkerRate;
+  availability: AvailabilityStatus;
+  trustScore: {
+    verified: boolean;
+    reviews: number;
+    rating: number;
+    yearsInService: number;
+    complaints: number;
+  };
+}
 
 export interface NewsItem {
   id: number;
