@@ -12,6 +12,7 @@ const navItems: { page: Page; label: string; icon: string }[] = [
   { page: 'news', label: 'खबरें', icon: '📰' },
   { page: 'complaints', label: 'शिकायतें', icon: '📝' },
   { page: 'schemes', label: 'योजनाएं', icon: '💼' },
+  { page: 'workers', label: 'कामगार', icon: '🛠️' },
   { page: 'members', label: 'सदस्य', icon: '👥' },
 ];
 
